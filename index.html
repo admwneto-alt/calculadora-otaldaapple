@@ -4,186 +4,318 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#f7f7f8">
-<title>O Tal da Apple — Avaliação de Aparelho</title>
+<title>O Tal da Apple — Calculadora de Compra</title>
 <style>
-:root{--bg:#f6f6f7;--card:#fff;--text:#111;--muted:#6b6b70;--line:#e5e5e7;--soft:#f1f1f3;--blue:#111;--green:#22a447;--yellow:#e6a500;--red:#d33;--shadow:0 10px 35px rgba(0,0,0,.06)}
+:root{--bg:#f6f6f7;--card:#fff;--text:#111;--muted:#6b6b70;--line:#e5e5e7;--shadow:0 10px 35px rgba(0,0,0,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
-button,input,select{font:inherit}.wrap{max-width:760px;margin:auto;padding:18px 16px 50px}
-.top{display:flex;align-items:center;justify-content:space-between;padding:7px 0 20px}.brand{font-weight:900;letter-spacing:-.5px;font-size:17px}.toplinks{display:flex;gap:8px}.toplinks button{border:0;background:transparent;font-weight:700;color:#555;padding:8px;cursor:pointer}
-.hero{text-align:center;padding:24px 0 22px}.eyebrow{font-weight:800;font-size:13px;color:#666}.hero h1{font-size:clamp(38px,8vw,62px);line-height:.98;letter-spacing:-3px;margin:8px 0}.hero h1 span{display:block;font-weight:800}.hero p{margin:14px auto 0;color:var(--muted);font-size:15px}
+button,input,select{font:inherit}.wrap{max-width:760px;margin:auto;padding:18px 16px 60px}
+.hidden{display:none!important}
+.top{display:flex;align-items:center;justify-content:space-between;padding:7px 0 20px}.brand{font-weight:900;letter-spacing:-.5px;font-size:17px}.top button{border:0;background:transparent;font-size:19px;cursor:pointer}
+.hero{text-align:center;padding:10px 0 22px}.eyebrow{font-weight:800;font-size:13px;color:#666}.hero h1{font-size:clamp(32px,7vw,50px);line-height:.98;letter-spacing:-2px;margin:8px 0}.hero h1 span{display:block;font-weight:800}.hero p{margin:14px auto 0;color:var(--muted);font-size:15px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#e9e9eb;border-radius:14px;padding:4px;margin:0 auto 18px;max-width:520px}.tabs button{border:0;background:transparent;border-radius:11px;padding:12px;font-weight:800;color:#666;cursor:pointer}.tabs button.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0;box-shadow:var(--shadow)}
 .step{font-size:12px;color:#888;font-weight:900;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}.question{font-size:19px;font-weight:850;margin-bottom:12px}
-.search{position:relative}.search input{padding-left:42px}.search:before{content:"⌕";position:absolute;left:15px;top:10px;font-size:23px;color:#777;z-index:1}
+.combo{position:relative}
 input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:13px;padding:13px 14px;outline:0}input:focus,select:focus{border-color:#111}
-.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.model{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;text-align:left;cursor:pointer}.model strong{display:block}.model small{color:#777}.model.selected{border:2px solid #111;padding:12px}
-.price-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.price{font-size:25px;font-weight:900}.change{border:0;background:#eee;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
-.battery{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.battery button{border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px 8px;cursor:pointer;text-align:left}.battery button.active{border:2px solid #111;padding:12px}.battery .icon{font-size:19px}.battery b{display:block;margin-top:4px}.battery small{display:block;color:#777;margin-top:3px}
+.dropdown{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);max-height:260px;overflow:auto;z-index:5}
+.dropdown .opt{padding:12px 14px;cursor:pointer;font-weight:600}
+.dropdown .opt:hover,.dropdown .opt.hl{background:#f4f4f5}
+.dropdown .empty{padding:12px 14px;color:#777}
+.badge-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px;background:#f4f4f5;border-radius:14px;padding:12px 14px}.badge{font-weight:900;font-size:16px}.badge small{display:block;font-weight:600;color:#777;font-size:12px}.change{border:0;background:#111;color:#fff;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+.battery{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.battery button{border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px 8px;cursor:pointer;text-align:left}.battery button.active{border:2px solid #111;padding:12px}.battery .icon{font-size:19px}.battery b{display:block;margin-top:4px}.battery small{display:block;color:#777;margin-top:3px}
 .defects{display:grid;grid-template-columns:1fr 1fr;gap:9px}.defect{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff;cursor:pointer}.defect span{font-weight:700}.defect small{color:#b22;display:block;margin-top:2px}.defect input{width:19px;height:19px;accent-color:#111}
-.sim{background:#111;color:#fff;border-radius:20px;padding:20px;margin-top:15px}.sim .muted{color:#aaa;font-size:12px}.sim .big{font-size:34px;font-weight:900;margin:3px 0 15px}.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.simbox{background:#1d1d1f;border-radius:14px;padding:13px}.simbox b{font-size:18px}.simbox small{display:block;color:#aaa}
-.pay-toggle{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pay-toggle button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;cursor:pointer}.pay-toggle button.active{border:2px solid #111;padding:13px}.pay-toggle b{display:block}.pay-toggle small{color:#777}
+.result{background:#111;color:#fff;border-radius:20px;padding:20px;margin-top:15px}.result .muted{color:#aaa;font-size:12px}.result .big{font-size:32px;font-weight:900;margin:3px 0 15px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resbox{background:#1d1d1f;border-radius:14px;padding:13px}.resbox b{font-size:16px}.resbox small{display:block;color:#aaa}
+.reset{border:0;background:#eee;color:#111;width:100%;padding:14px;border-radius:13px;font-weight:900;cursor:pointer;margin-top:12px}
+.warn{background:#fee2e2;color:#b91c1c;font-weight:900;text-align:center;padding:14px;border-radius:14px;margin-top:12px;border:2px solid #f87171}
+.field{margin-top:12px}.field label{display:block;font-size:12px;color:#777;font-weight:800;margin:0 0 5px}
+.money-input{display:flex;align-items:center;border:1px solid #d8d8dc;background:#fff;border-radius:13px;padding:0 14px}.money-input input{border:0;padding:13px 4px;flex:1;text-align:left}.money-input input:focus{outline:0}.money-input .prefix,.money-input .suffix{color:#777;font-weight:800}
 .table{width:100%;border-collapse:collapse;margin-top:10px}.table th,.table td{text-align:left;border-bottom:1px solid var(--line);padding:10px 5px}.table th{font-size:12px;color:#777}.table td:last-child,.table th:last-child{text-align:right}
-.whatsapp{background:#25d366!important;color:#fff!important;border:0!important;width:100%;padding:14px!important;border-radius:13px!important;font-weight:900;cursor:pointer;margin-top:12px}
-.copy{background:#111;color:#fff;border:0;width:100%;padding:14px;border-radius:13px;font-weight:900;cursor:pointer;margin-top:9px}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:#777;font-weight:800;margin:0 0 5px}
-.preview{background:#f4f4f5;border-radius:14px;padding:14px;white-space:pre-wrap;font-size:14px;line-height:1.5}
-.admin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10;padding:30px 16px;overflow:auto}.admin.open{display:block}.admin-card{max-width:760px;margin:auto;background:#fff;border-radius:22px;padding:20px}.admin-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eee;border-radius:10px;padding:8px 11px;cursor:pointer}.admin-row{display:grid;grid-template-columns:1fr 120px 100px;gap:7px;margin:8px 0}.save{background:#111;color:#fff;border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer}
+.row-link{background:#eaf3ff}.row-presencial{background:#fff1e6}
+.legend{display:flex;gap:16px;font-size:12px;color:#666;margin-top:10px;flex-wrap:wrap}.legend span{display:inline-flex;align-items:center;gap:6px}.dot{width:10px;height:10px;border-radius:3px;display:inline-block}.dot.link{background:#bcd9ff}.dot.pres{background:#ffd9bb}
+.admin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10;padding:30px 16px;overflow:auto}.admin.open{display:block}.admin-card{max-width:760px;margin:auto;background:#fff;border-radius:22px;padding:20px}.admin-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eee;border-radius:10px;padding:8px 11px;cursor:pointer}
+.admin-row3{display:grid;grid-template-columns:2fr 1fr 1fr 90px;gap:7px;margin:8px 0}.admin-row2{display:grid;grid-template-columns:2fr 1fr 90px;gap:7px;margin:8px 0}
+.save{background:#111;color:#fff;border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer}
+.addbtn{background:#eee;color:#111;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;margin-top:6px}
+.rate-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}.rate-grid div{text-align:center}.rate-grid label{font-size:11px;color:#777;display:block;margin-bottom:3px}.rate-grid input{padding:8px;text-align:center}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 16px;border-radius:12px;display:none;z-index:20}
-@media(max-width:600px){.wrap{padding:12px 12px 35px}.model-grid,.fields{grid-template-columns:1fr}.battery{grid-template-columns:1fr}.defects{grid-template-columns:1fr}.sim-grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.admin-row{grid-template-columns:1fr 100px 70px}}
+@media(max-width:600px){.wrap{padding:12px 12px 40px}.defects{grid-template-columns:1fr}.result-grid{grid-template-columns:1fr}.admin-row3{grid-template-columns:1fr 1fr 1fr 70px}.rate-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header class="top"><div class="brand">O Tal da Apple</div><div class="toplinks"><button onclick="openAdmin()">⚙️</button></div></header>
+<header class="top"><div class="brand">O Tal da Apple</div><button onclick="openAdmin()">⚙️</button></header>
 
-<section class="hero"><div class="eyebrow">O Tal da Apple</div><h1>Calculadora<span>de Avaliação</span></h1><p>Avalie o aparelho do cliente de forma rápida e padronizada</p></section>
+<section class="hero"><div class="eyebrow">O Tal da Apple</div><h1>Calculadora<span>de Compra</span></h1><p>Selecione o modelo e marque os defeitos</p></section>
 
-<div class="tabs"><button class="active">📱 Avaliação</button><button onclick="document.getElementById('parcel').scrollIntoView({behavior:'smooth'})">💳 Upgrade</button></div>
+<div class="tabs"><button id="tabCompra" class="active" onclick="showTab('compra')">🧮 Compra</button><button id="tabParcel" onclick="showTab('parcel')">💳 Parcelamento</button></div>
 
-<section class="card">
-<div class="step">Passo 1</div><div class="question">Qual é o aparelho do cliente?</div><div style="background:#f4f4f5;border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#555"><b>Importante:</b> este valor é apenas a avaliação do aparelho usado do cliente.</div>
-<div class="search"><input id="search" placeholder="Buscar aparelho... ex: 15 Pro Max 256"></div>
-<div id="models" class="model-grid"></div>
-<div class="price-row"><div><div class="price" id="basePrice">R$ —</div><small>valor-base de avaliação</small></div><button class="change" onclick="clearModel()">trocar</button></div>
+<div id="viewCompra">
+
+<section class="card" id="step1">
+<div class="step">Passo 1</div><div class="question">Qual é o modelo?</div>
+<div class="combo">
+<input id="search" placeholder="Digite ou selecione o aparelho" autocomplete="off" onfocus="openDropdown()" oninput="openDropdown()" onkeydown="handleKey(event)">
+<div id="modelsDropdown" class="dropdown hidden"></div>
+</div>
+<div class="badge-row hidden" id="badgeRow"><div><div class="badge" id="badgeRange">R$ —</div><small>referência mín–máx</small></div><button class="change" onclick="clearModel()">trocar</button></div>
 </section>
 
-<section class="card">
+<section class="card hidden" id="step2">
 <div class="step">Passo 2</div><div class="question">Estado da bateria</div>
 <div class="battery">
 <button data-bat="0" onclick="setBattery(0)"><span class="icon">🟢</span><b>Acima de 85%</b><small>Sem desconto</small></button>
-<button data-bat="1" onclick="setBattery(1)"><span class="icon">🟡</span><b>Entre 60–85%</b><small id="bat1">−R$ 0</small></button>
-<button data-bat="2" onclick="setBattery(2)"><span class="icon">🔴</span><b>Abaixo de 60%</b><small id="bat2">−R$ 0</small></button>
+<button data-bat="1" onclick="setBattery(1)"><span class="icon">🔴</span><b>Abaixo de 84%</b><small id="batLow">−0%</small></button>
 </div>
 </section>
 
-<section class="card">
+<section class="card hidden" id="step3">
 <div class="step">Passo 3</div><div class="question">Defeitos presentes</div>
 <div id="defects" class="defects"></div>
-<div class="sim"><div class="muted">Simulador</div><div class="muted">Valor de avaliação</div><div class="big" id="finalPrice">R$ 0,00</div><div class="sim-grid"><div class="simbox"><small>Descontos</small><b id="discounts">R$ 0,00</b></div><div class="simbox"><small>Valor final</small><b id="final2">R$ 0,00</b></div></div></div>
+<div class="warn hidden" id="warnBox">⚠️ NÃO COMPRAR O APARELHO — os descontos ultrapassam o valor do aparelho</div>
+<div class="result"><div class="muted">Valor de compra</div><div class="big" id="finalRange">R$ 0,00</div>
+<div class="result-grid"><div class="resbox"><small>Preço base</small><b id="baseRange">R$ 0,00</b></div><div class="resbox"><small>Total descontos</small><b id="discRange">R$ 0,00</b></div></div></div>
+<button class="reset" onclick="resetAll()">↩ Nova avaliação</button>
 </section>
 
-<section class="card" id="parcel">
-<div class="step">Upgrade</div><div class="question">Upgrade / pagamento da diferença</div>
-<div class="field"><label>Valor do aparelho novo ou serviço</label><input id="newPrice" type="number" placeholder="ex: 6500" oninput="calc()"></div>
-<div class="sim" style="margin-top:12px"><div class="muted">Diferença a pagar</div><div class="big" id="diffPrice">R$ 0,00</div><div class="sim-grid"><div class="simbox"><small>Avaliação do usado</small><b id="tradeInRef">R$ 0,00</b></div><div class="simbox"><small>Aparelho novo</small><b id="newPriceRef">R$ 0,00</b></div></div></div>
-<div class="pay-toggle" style="margin-top:15px"><button id="machine" class="active" onclick="setPay('machine')">📱 <b>Maquininha</b><small>Presencial · D+1</small></button><button id="link" onclick="setPay('link')">💻 <b>Link</b><small>Online</small></button></div>
-<div style="margin-top:15px" class="field"><label>Bandeira do cartão</label><select id="brand" onchange="calc()"><option value="debit">💳 Débito</option><option value="visa">Visa / Mastercard</option><option value="elo">Elo / Hipercard</option></select></div>
-<div class="question" style="margin-top:18px">Parcelas</div>
-<select id="installments" onchange="calc()"><option value="1">À vista</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="7">7x</option><option value="8">8x</option><option value="9">9x</option><option value="10">10x</option><option value="11">11x</option><option value="12">12x</option><option value="13">13x</option><option value="14">14x</option><option value="15">15x</option><option value="16">16x</option><option value="17">17x</option><option value="18">18x</option></select>
-<table class="table"><thead><tr><th>Parcelas</th><th>Valor/x</th><th>Total</th></tr></thead><tbody id="parcelRows"></tbody></table>
-</section>
-
-<section class="card">
-<div class="step">Mensagem WhatsApp</div><div class="question">Dados do aparelho avaliado</div>
-<div class="fields">
-<div class="field"><label>Modelo do aparelho</label><input id="adModel" placeholder="ex: iPhone 15 Pro Max"></div>
-<div class="field"><label>Armazenamento</label><input id="storage" placeholder="256GB"></div>
-<div class="field"><label>Cor</label><input id="color" placeholder="ex: Rosa"></div>
-<div class="field"><label>Bateria %</label><input id="batteryPct" type="number" placeholder="86"></div>
-<div class="field"><label>Código interno</label><input id="code" placeholder="ex: 15396"></div>
-<div class="field"><label>Garantia (meses)</label><input id="warranty" type="number" value="12"></div>
+<section class="card hidden" id="upgradeCard">
+<div class="step">Upgrade</div><div class="question">Calculadora de upgrade</div>
+<div class="field"><label>Valor do aparelho cotado (novo)</label>
+<div class="money-input"><span class="prefix">R$</span><input id="quotedPrice" type="text" inputmode="numeric" placeholder="0" oninput="formatMoneyInput(this);calc()"><span class="suffix">,00</span></div>
 </div>
-<div class="question" style="margin-top:18px">💬 Prévia da mensagem</div>
-<div class="preview" id="preview">Preencha os campos acima...</div>
-<button class="copy" onclick="copyMessage()">📋 Copiar para WhatsApp</button>
-<button class="whatsapp" onclick="sendWhatsApp()">Enviar pelo WhatsApp</button>
+<div class="result" style="margin-top:12px"><div class="muted">Diferença a pagar</div><div class="big" id="diffRange">R$ 0,00</div>
+<div class="result-grid"><div class="resbox"><small>Valor de compra (usado)</small><b id="tradeRef">R$ 0,00</b></div><div class="resbox"><small>Aparelho cotado</small><b id="quotedRef">R$ 0,00</b></div></div></div>
 </section>
+
+</div>
+
+<div id="viewParcel" class="hidden">
+<section class="card">
+<div class="step">Parcelamento</div><div class="question">Simular parcelas no cartão</div>
+<div class="field"><label>Valor a parcelar</label><input id="parcelValue" type="number" placeholder="ex: 2850" oninput="renderParcel()"></div>
+<button class="addbtn" onclick="useCalculatedDiff()">↺ Usar diferença calculada no upgrade</button>
+<table class="table"><thead><tr><th>Parcelas</th><th>Acréscimo</th><th>Valor/x</th><th>Total</th></tr></thead><tbody id="parcelRows"></tbody></table>
+<div class="legend"><span><i class="dot link"></i>Disponível no link e presencial (até 12x)</span><span><i class="dot pres"></i>Somente presencial (13x a 18x)</span></div>
+</section>
+</div>
+
 </div>
 
 <div class="admin" id="admin"><div class="admin-card">
-<div class="admin-head"><h2>🔒 Área Admin — Tabela de Avaliação</h2><button class="close" onclick="closeAdmin()">✕</button></div>
-<p style="color:#666">Aqui você cadastra somente os <b>valores-base de avaliação dos aparelhos dos clientes</b>, além dos descontos e regras. Não são preços de venda.</p>
-<h3>Valores-base de avaliação</h3><div id="adminProducts"></div>
-<button class="save" style="background:#eee;color:#111;margin-top:8px" onclick="addProduct()">+ Adicionar aparelho</button>
-<h3>Descontos por Defeito</h3><div class="admin-row"><input id="dTela" placeholder="Tela quebrada"><input id="vTela" type="number" value="500"><button onclick="saveSettings()">Salvar</button></div>
-<div class="admin-row"><input id="dCamera" placeholder="Câmera"><input id="vCamera" type="number" value="300"><button onclick="saveSettings()">Salvar</button></div>
-<div class="admin-row"><input id="dFace" placeholder="Face ID"><input id="vFace" type="number" value="500"><button onclick="saveSettings()">Salvar</button></div>
-<div class="admin-row"><input id="dBack" placeholder="Tampa traseira"><input id="vBack" type="number" value="300"><button onclick="saveSettings()">Salvar</button></div>
-<h3>Desconto da bateria</h3><div class="admin-row"><input placeholder="60–85%"><input id="vBat1" type="number" value="200"><span></span></div>
-<div class="admin-row"><input placeholder="Abaixo de 60%"><input id="vBat2" type="number" value="400"><span></span></div>
-<h3>WhatsApp da loja</h3><input id="wa" placeholder="5512999999999">
-<div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap"><button class="save" onclick="saveSettings()">Salvar configurações</button><button class="save" style="background:#555" onclick="exportConfig()">📤 Exportar configuração</button></div>
-<p style="color:#999;font-size:12px;margin-top:8px">Exportar copia a tabela atual pra área de transferência. Cole aqui no chat com o Claude quando quiser publicar os valores atualizados no site de todo mundo.</p>
+<div class="admin-head"><h2>🔒 Área Admin</h2><button class="close" onclick="closeAdmin()">✕</button></div>
+<p style="color:#666">Valores de referência de compra, descontos e taxas de parcelamento.</p>
+
+<h3>Aparelhos (mín / máx)</h3><div id="adminProducts"></div>
+<button class="addbtn" onclick="addProduct()">+ Adicionar aparelho</button>
+
+<h3>Defeitos e descontos</h3><div id="adminDefects"></div>
+<button class="addbtn" onclick="addDefect()">+ Adicionar defeito</button>
+
+<h3>Desconto de bateria (% sobre o valor do aparelho)</h3>
+<div class="admin-row2"><input value="Abaixo de 84%" disabled><input id="battDisc" type="number" placeholder="%"><span></span></div>
+
+<h3>Acréscimo do parcelamento (%) — mesma tabela pra link e presencial</h3>
+<div class="rate-grid" id="rateGrid"></div>
+
+<div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap"><button class="save" onclick="saveSettings()">Salvar configurações</button><button class="save" style="background:#555" onclick="exportConfig()">📤 Exportar configuração</button></div>
+<p style="color:#999;font-size:12px;margin-top:8px">Exportar copia a configuração atual. Cole no chat com o Claude quando quiser publicar os valores pra todo mundo.</p>
 </div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const DEFAULT={
 products:[
-["iPhone 13 128GB",2390],["iPhone 14 128GB",3890],["iPhone 15 128GB",4190],
-["iPhone 15 Pro 128GB",0],["iPhone 15 Pro Max 256GB",0],["iPhone 16 128GB",4690],
-["iPhone 16 Pro 128GB",0],["iPhone 16 Pro Max 256GB",0],["iPhone 17 Pro 256GB",4990],
-["iPhone 17 Pro Max 256GB",7400]
+{name:"iPhone 13 128GB",min:2200,max:2500},
+{name:"iPhone 14 128GB",min:3700,max:4000},
+{name:"iPhone 15 128GB",min:4000,max:4300},
+{name:"iPhone 15 Pro 128GB",min:0,max:0},
+{name:"iPhone 15 Pro Max 256GB",min:0,max:0},
+{name:"iPhone 16 128GB",min:4500,max:4800},
+{name:"iPhone 16 Pro 128GB",min:0,max:0},
+{name:"iPhone 16 Pro Max 256GB",min:0,max:0},
+{name:"iPhone 17 Pro 256GB",min:4800,max:5100},
+{name:"iPhone 17 Pro Max 256GB",min:7200,max:7500}
 ],
-defects:{tela:["Tela quebrada",500],camera:["Câmera",300],face:["Face ID",500],back:["Tampa traseira",300]},
-bat1:200,bat2:400,wa:"5512999999999"
+defects:[
+{name:"🔨 Tela quebrada",value:500},
+{name:"📷 Câmera",value:300},
+{name:"🔒 Face ID",value:500},
+{name:"🔲 Tampa traseira",value:300}
+],
+battDiscount:8,
+installRates:[0,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5,32.5,34.5,36.5]
 };
-let cfg=JSON.parse(localStorage.getItem("ota_calc")||"null")||DEFAULT;
-let selected=-1,battery=0,pay="machine",checked={};
+let cfg=JSON.parse(localStorage.getItem("ota_calc_v2")||"null")||JSON.parse(JSON.stringify(DEFAULT));
+let selected=-1,battery=-1,checkedDefects={};
+let dropdownOpen=false,filteredList=[],hlIndex=-1;
 
 const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n||0);
 const $=id=>document.getElementById(id);
+const range=(a,b)=>a===b?money(a):money(a)+" – "+money(b);
 
-function renderProducts(){
- let q=$("search").value.toLowerCase();
- $("models").innerHTML=cfg.products.filter(p=>p[0].toLowerCase().includes(q)).map((p,i)=>`<button class="model ${selected===i?'selected':''}" onclick="choose(${i})"><strong>${p[0]}</strong><small>${money(p[1])}</small></button>`).join("")||"<div style='color:#777'>Nenhum modelo encontrado.</div>";
+function showTab(t){
+ $("tabCompra").classList.toggle("active",t==="compra");
+ $("tabParcel").classList.toggle("active",t==="parcel");
+ $("viewCompra").classList.toggle("hidden",t!=="compra");
+ $("viewParcel").classList.toggle("hidden",t!=="parcel");
+ if(t==="parcel")renderParcel();
 }
-function choose(i){selected=i;renderProducts();$("basePrice").textContent=money(cfg.products[i][1]);calc();updatePreview()}
-function clearModel(){selected=-1;$("basePrice").textContent="R$ —";renderProducts();calc()}
-function setBattery(v){battery=v;document.querySelectorAll("[data-bat]").forEach(x=>x.classList.remove("active"));document.querySelector(`[data-bat="${v}"]`).classList.add("active");calc()}
+
+function openDropdown(){dropdownOpen=true;renderDropdown()}
+function closeDropdown(){dropdownOpen=false;$("modelsDropdown").classList.add("hidden")}
+function renderDropdown(){
+ let q=$("search").value.toLowerCase();
+ filteredList=cfg.products.map((p,i)=>({p,i})).filter(o=>o.p.name.toLowerCase().includes(q));
+ hlIndex=-1;
+ $("modelsDropdown").innerHTML=filteredList.length
+  ?filteredList.map((o,idx)=>`<div class="opt" data-idx="${idx}" onclick="choose(${o.i})">${o.p.name}</div>`).join("")
+  :`<div class="empty">Nenhum modelo encontrado.</div>`;
+ $("modelsDropdown").classList.remove("hidden");
+}
+function updateHighlight(){
+ document.querySelectorAll("#modelsDropdown .opt").forEach((el,idx)=>el.classList.toggle("hl",idx===hlIndex));
+}
+function handleKey(e){
+ if(!dropdownOpen)return;
+ if(e.key==="ArrowDown"){e.preventDefault();hlIndex=Math.min(hlIndex+1,filteredList.length-1);updateHighlight()}
+ else if(e.key==="ArrowUp"){e.preventDefault();hlIndex=Math.max(hlIndex-1,0);updateHighlight()}
+ else if(e.key==="Enter"){e.preventDefault();if(hlIndex>=0&&filteredList[hlIndex])choose(filteredList[hlIndex].i)}
+ else if(e.key==="Escape"){closeDropdown()}
+}
+$("search").addEventListener("blur",()=>setTimeout(closeDropdown,150));
+
+function choose(i){
+ selected=i;battery=-1;checkedDefects={};
+ $("search").value=cfg.products[i].name;
+ closeDropdown();
+ $("badgeRow").classList.remove("hidden");
+ $("badgeRange").textContent=range(cfg.products[i].min,cfg.products[i].max);
+ $("step2").classList.remove("hidden");
+ $("step3").classList.add("hidden");
+ $("upgradeCard").classList.add("hidden");
+ document.querySelectorAll("[data-bat]").forEach(x=>x.classList.remove("active"));
+ renderBatteryLabels();
+ calc();
+}
+function clearModel(){
+ selected=-1;battery=-1;checkedDefects={};
+ $("search").value="";
+ $("badgeRow").classList.add("hidden");
+ $("step2").classList.add("hidden");
+ $("step3").classList.add("hidden");
+ $("upgradeCard").classList.add("hidden");
+}
+function renderBatteryLabels(){
+ if(selected<0)return;
+ let p=cfg.products[selected];
+ let avgDisc=(p.min+p.max)/2*cfg.battDiscount/100;
+ $("batLow").textContent="−"+cfg.battDiscount+"% (≈"+money(avgDisc)+")";
+}
+function setBattery(v){
+ battery=v;
+ document.querySelectorAll("[data-bat]").forEach(x=>x.classList.remove("active"));
+ document.querySelector(`[data-bat="${v}"]`).classList.add("active");
+ $("step3").classList.remove("hidden");
+ renderDefects();
+ calc();
+}
 function renderDefects(){
- $("defects").innerHTML=Object.entries(cfg.defects).map(([k,v])=>`<label class="defect"><span>${v[0]}<small>−${money(v[1])}</small></span><input type="checkbox" ${checked[k]?'checked':''} onchange="checked['${k}']=this.checked;calc()"></label>`).join("");
- $("bat1").textContent="−"+money(cfg.bat1);$("bat2").textContent="−"+money(cfg.bat2);
+ $("defects").innerHTML=cfg.defects.map((d,i)=>`<label class="defect"><span>${d.name}<small>−${money(d.value)}</small></span><input type="checkbox" ${checkedDefects[i]?'checked':''} onchange="checkedDefects[${i}]=this.checked;calc()"></label>`).join("");
 }
 function calc(){
- let base=selected<0?0:cfg.products[selected][1],disc=0;
- if(battery===1)disc+=cfg.bat1;if(battery===2)disc+=cfg.bat2;
- Object.keys(checked).forEach(k=>{if(checked[k])disc+=cfg.defects[k]?.[1]||0});
- let final=Math.max(0,base-disc);
- $("discounts").textContent=money(disc);$("finalPrice").textContent=money(final);$("final2").textContent=money(final);
- let newPrice=+$("newPrice").value||0;
- let diff=Math.max(0,newPrice-final);
- let credit=Math.max(0,final-newPrice);
- $("tradeInRef").textContent=money(final);
- $("newPriceRef").textContent=money(newPrice);
- $("diffPrice").textContent=credit>0?"Crédito de "+money(credit):money(diff);
- let n=+$("installments").value, fee=feeRate(n,pay,$("brand").value), total=diff*(1+fee), per=n>1?total/n:total;
- $("parcelRows").innerHTML=diff<=0?`<tr><td colspan="3">${credit>0?"Sem valor a parcelar — cliente tem crédito de "+money(credit):"Informe o valor do aparelho novo"}</td></tr>`:`<tr><td>${n===1?'À vista':n+'x'}</td><td>${money(per)}</td><td>${money(total)}</td></tr>`;
-}
-function feeRate(n,mode,brand){if(n===1)return brand==="debit"?0:.012;let rates=[0,.045,.065,.085,.105,.125,.145,.165,.185,.205,.225,.245,.265,.285,.305,.325,.345,.365,.385];let r=rates[n]||.385;return mode==="link"?r+.025:r}
-function setPay(v){pay=v;$("machine").classList.toggle("active",v==="machine");$("link").classList.toggle("active",v==="link");calc()}
-function message(){
- let model=$("adModel").value||"iPhone",storage=$("storage").value||"",color=$("color").value||"",bat=$("batteryPct").value||"",code=$("code").value||"",war=$("warranty").value||"12";
- let final=$("final2").textContent;
- let newPrice=+$("newPrice").value||0,upgradeLine="";
- if(newPrice>0){
-  let diffTxt=$("diffPrice").textContent;
-  upgradeLine=`\n📲 Aparelho novo: ${money(newPrice)}\n💳 ${diffTxt.startsWith("Crédito")?diffTxt:"Diferença a pagar: "+diffTxt}\n`;
+ if(selected<0)return;
+ let p=cfg.products[selected];
+ let battPct=battery===1?cfg.battDiscount:0;
+ let discMin=p.min*battPct/100,discMax=p.max*battPct/100;
+ let defectTotal=0;
+ cfg.defects.forEach((d,i)=>{if(checkedDefects[i])defectTotal+=d.value});
+ discMin+=defectTotal;discMax+=defectTotal;
+ let rawMin=p.min-discMin,rawMax=p.max-discMax;
+ let finalMin=Math.max(0,rawMin),finalMax=Math.max(0,rawMax);
+ if(finalMin>finalMax)[finalMin,finalMax]=[finalMax,finalMin];
+ $("baseRange").textContent=range(p.min,p.max);
+ $("discRange").textContent=range(discMin,discMax);
+ $("finalRange").textContent=range(finalMin,finalMax);
+ $("warnBox").classList.toggle("hidden",rawMax>=0);
+ if(battery>=0){
+  $("upgradeCard").classList.remove("hidden");
+  $("tradeRef").textContent=range(finalMin,finalMax);
+  let quoted=moneyInputValue("quotedPrice");
+  $("quotedRef").textContent=money(quoted);
+  let diffMin=Math.max(0,quoted-finalMax),diffMax=Math.max(0,quoted-finalMin);
+  let creditMin=Math.max(0,finalMin-quoted),creditMax=Math.max(0,finalMax-quoted);
+  if(quoted>0&&finalMax>=quoted&&finalMin>=quoted){
+   $("diffRange").textContent="Crédito de "+range(creditMin,creditMax);
+  }else{
+   $("diffRange").textContent=range(diffMin,diffMax);
+  }
+  window._lastDiff={min:diffMin,max:diffMax};
  }
- return `📱 ${model} ${storage}${color?" • "+color:""}\n🔋 Bateria: ${bat}%\n🏷️ Código: ${code||"—"}\n🛡️ Garantia: ${war} meses\n\n💰 Valor de avaliação: ${final}${upgradeLine}\nValor de avaliação calculado conforme modelo, bateria e defeitos informados.`;
 }
-function updatePreview(){$("preview").textContent=message()}
-["adModel","storage","color","batteryPct","code","warranty","newPrice"].forEach(id=>$(id).addEventListener("input",updatePreview));
-$("search").addEventListener("input",renderProducts);
-function copyMessage(){navigator.clipboard.writeText(message());toast("Mensagem copiada!")}
-function sendWhatsApp(){window.open("https://wa.me/"+cfg.wa+"?text="+encodeURIComponent(message()),"_blank")}
+function resetAll(){
+ selected=-1;battery=-1;checkedDefects={};
+ $("search").value="";
+ $("quotedPrice").value="";
+ $("badgeRow").classList.add("hidden");
+ $("step2").classList.add("hidden");
+ $("step3").classList.add("hidden");
+ $("upgradeCard").classList.add("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function useCalculatedDiff(){
+ if(!window._lastDiff){toast("Calcule um upgrade na aba Compra primeiro");return}
+ let avg=(window._lastDiff.min+window._lastDiff.max)/2;
+ $("parcelValue").value=Math.round(avg);
+ renderParcel();
+}
+function renderParcel(){
+ let v=+$("parcelValue").value||0;
+ $("parcelRows").innerHTML=cfg.installRates.map((rate,idx)=>{
+  let n=idx+1;
+  let total=v*(1+rate/100);
+  let per=total/n;
+  let cls=n<=12?"row-link":"row-presencial";
+  return `<tr class="${cls}"><td>${n===1?'À vista':n+'x'}</td><td>${rate}%</td><td>${money(per)}</td><td>${money(total)}</td></tr>`;
+ }).join("");
+}
+
+function formatMoneyInput(el){
+ let digits=el.value.replace(/\D/g,"");
+ el.value=digits?Number(digits).toLocaleString("pt-BR"):"";
+}
+function moneyInputValue(id){
+ return +($( id).value.replace(/\D/g,""))||0;
+}
 function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800)}
+
 function openAdmin(){renderAdmin();$("admin").classList.add("open")}
 function closeAdmin(){$("admin").classList.remove("open")}
 function renderAdmin(){
- $("adminProducts").innerHTML=cfg.products.map((p,i)=>`<div class="admin-row"><input id="pn${i}" value="${p[0]}"><input id="pv${i}" type="number" value="${p[1]}"><button onclick="removeProduct(${i})">Excluir</button></div>`).join("");
- $("vTela").value=cfg.defects.tela[1];$("vCamera").value=cfg.defects.camera[1];$("vFace").value=cfg.defects.face[1];$("vBack").value=cfg.defects.back[1];$("vBat1").value=cfg.bat1;$("vBat2").value=cfg.bat2;$("wa").value=cfg.wa;
+ $("adminProducts").innerHTML=cfg.products.map((p,i)=>`<div class="admin-row3"><input id="pn${i}" value="${p.name}"><input id="pmin${i}" type="number" value="${p.min}" placeholder="mín"><input id="pmax${i}" type="number" value="${p.max}" placeholder="máx"><button onclick="removeProduct(${i})">Excluir</button></div>`).join("");
+ $("adminDefects").innerHTML=cfg.defects.map((d,i)=>`<div class="admin-row2"><input id="dn${i}" value="${d.name}"><input id="dv${i}" type="number" value="${d.value}"><button onclick="removeDefect(${i})">Excluir</button></div>`).join("");
+ $("battDisc").value=cfg.battDiscount;
+ $("rateGrid").innerHTML=cfg.installRates.map((r,i)=>`<div><label>${i+1}x</label><input id="rate${i}" type="number" step="0.1" value="${r}"></div>`).join("");
 }
-function saveSettings(){
- cfg.products=cfg.products.map((p,i)=>[$("pn"+i).value,+$("pv"+i).value||0]);
- cfg.defects={tela:[$("dTela").value||"Tela quebrada",+$("vTela").value||0],camera:[$("dCamera").value||"Câmera",+$("vCamera").value||0],face:[$("dFace").value||"Face ID",+$("vFace").value||0],back:[$("dBack").value||"Tampa traseira",+$("vBack").value||0]};
- cfg.bat1=+$("vBat1").value||0;cfg.bat2=+$("vBat2").value||0;cfg.wa=$("wa").value||DEFAULT.wa;
- localStorage.setItem("ota_calc",JSON.stringify(cfg));renderProducts();renderDefects();calc();closeAdmin();toast("Configurações salvas!");
-}
+function addProduct(){cfg.products.push({name:"Novo aparelho",min:0,max:0});renderAdmin()}
 function removeProduct(i){cfg.products.splice(i,1);renderAdmin()}
-function addProduct(){cfg.products.push(["Novo aparelho",0]);renderAdmin()}
+function addDefect(){cfg.defects.push({name:"Novo defeito",value:0});renderAdmin()}
+function removeDefect(i){cfg.defects.splice(i,1);renderAdmin()}
+function saveSettings(){
+ cfg.products=cfg.products.map((p,i)=>({name:$("pn"+i).value||p.name,min:+$("pmin"+i).value||0,max:+$("pmax"+i).value||0}));
+ cfg.defects=cfg.defects.map((d,i)=>({name:$("dn"+i).value||d.name,value:+$("dv"+i).value||0}));
+ cfg.battDiscount=+$("battDisc").value||0;
+ cfg.installRates=cfg.installRates.map((r,i)=>+$("rate"+i).value||0);
+ localStorage.setItem("ota_calc_v2",JSON.stringify(cfg));
+ selected=-1;battery=-1;checkedDefects={};
+ $("search").value="";
+ $("badgeRow").classList.add("hidden");$("step2").classList.add("hidden");$("step3").classList.add("hidden");$("upgradeCard").classList.add("hidden");
+ renderParcel();
+ closeAdmin();
+ toast("Configurações salvas!");
+}
 function exportConfig(){navigator.clipboard.writeText(JSON.stringify(cfg,null,2));toast("Configuração copiada!")}
-renderProducts();renderDefects();setBattery(0);calc();
+
+renderParcel();
 </script>
 </body>
 </html>
