@@ -1,4 +1,3 @@
-Bom. Segue o código completo pra colar no GitHub, substituindo tudo no `index.html`:```html
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -37,8 +36,9 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 .legend{display:flex;gap:16px;font-size:12px;color:#666;margin-top:10px;flex-wrap:wrap}.legend span{display:inline-flex;align-items:center;gap:6px}.dot{width:10px;height:10px;border-radius:3px;display:inline-block}.dot.link{background:#bcd9ff}.dot.pres{background:#ffd9bb}
 .admin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10;padding:30px 16px;overflow:auto}.admin.open{display:block}.admin-card{max-width:760px;margin:auto;background:#fff;border-radius:22px;padding:20px}.admin-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eee;border-radius:10px;padding:8px 11px;cursor:pointer}
 .line-block{border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0}.line-block h5{margin:10px 0 6px;font-size:12px;color:#888;text-transform:uppercase}
+.labeled-field label{font-size:11px;color:#777;display:block;margin-bottom:3px;font-weight:800}
 .defect-admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:7px}.defect-admin-grid div label{font-size:11px;color:#777;display:block;margin-bottom:3px}.defect-admin-grid input{padding:9px}
-.admin-row3{display:grid;grid-template-columns:2fr 1fr 1fr 90px;gap:7px;margin:8px 0}.admin-row2{display:grid;grid-template-columns:2fr 1fr 90px;gap:7px;margin:8px 0}
+.admin-row3{display:grid;grid-template-columns:2fr 1fr 1fr 90px;gap:7px;margin:8px 0}.admin-row2{display:grid;grid-template-columns:2fr 1fr 90px;gap:7px;margin:8px 0;align-items:end}
 .save{background:#111;color:#fff;border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer}
 .addbtn{background:#eee;color:#111;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;margin-top:6px}
 .rate-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}.rate-grid div{text-align:center}.rate-grid label{font-size:11px;color:#777;display:block;margin-bottom:3px}.rate-grid input{padding:8px;text-align:center}
@@ -111,9 +111,22 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 
 </div>
 
+<div class="admin" id="pinModal"><div class="admin-card" style="max-width:320px;text-align:center">
+<h3 style="margin-top:0">🔒 Acesso restrito</h3>
+<p style="color:#666;font-size:13px">Digite o PIN de 4 dígitos</p>
+<input id="pinInput" type="password" inputmode="numeric" maxlength="4" style="text-align:center;font-size:22px;letter-spacing:10px" onkeydown="if(event.key==='Enter')confirmPin()">
+<div style="display:flex;gap:8px;margin-top:14px"><button class="addbtn" style="flex:1" onclick="closePinModal()">Cancelar</button><button class="save" style="flex:1" onclick="confirmPin()">Entrar</button></div>
+</div></div>
+
 <div class="admin" id="admin"><div class="admin-card">
 <div class="admin-head"><h2>🔒 Área Admin</h2><button class="close" onclick="closeAdmin()">✕</button></div>
 <p style="color:#666">Modelos, armazenamentos, desconto de bateria e defeitos (fixos por modelo) e taxas de parcelamento.</p>
+
+<h3>Segurança</h3>
+<div class="admin-row2"><div class="labeled-field"><label>PIN de acesso ao admin (4 dígitos)</label><input id="adminPinInput" maxlength="4" inputmode="numeric"></div><span></span><span></span></div>
+
+<h3>Tipos de defeito</h3><div id="adminDefectCats"></div>
+<button class="addbtn" onclick="addDefectCat()">+ Adicionar tipo de defeito</button>
 
 <h3>Modelos</h3><div id="adminLines"></div>
 <button class="addbtn" onclick="addLine()">+ Adicionar modelo</button>
@@ -127,7 +140,7 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 <div class="toast" id="toast"></div>
 
 <script>
-const DEFECT_CATS=[
+const DEFECT_CATS_DEFAULT=[
 {key:"tampa",label:"Tampa traseira"},
 {key:"vidro",label:"Vidro frontal"},
 {key:"tela",label:"Troca de tela"},
@@ -166,14 +179,18 @@ const LINES_RAW=[
 ["iPhone 17 Pro Max",500,["256 GB","512 GB","1 TB","2 TB"],[650,650,730,1000,700]]
 ];
 const DEFAULT={
+adminPin:"1234",
+defectCats:JSON.parse(JSON.stringify(DEFECT_CATS_DEFAULT)),
 modelLines:LINES_RAW.map(([name,battDisc,storages,defArr])=>({
  name,battDisc,
  storages:storages.map(label=>({label,min:0,max:0})),
  defects:{tampa:defArr[0],vidro:defArr[1],tela:defArr[2],placa:defArr[3],faceid:defArr[4]}
 })),
-installRates:[0,4.5,6.5,8.5,10.5,12.5,14.5,16.5,18.5,20.5,22.5,24.5,26.5,28.5,30.5,32.5,34.5,36.5]
+installRates:[5.89,7.49,8.29,8.89,9.49,10.19,10.79,11.49,12.29,12.79,13.59,14.60,16.49,16.89,17.29,17.49,17.69,17.99]
 };
-let cfg=JSON.parse(localStorage.getItem("ota_calc_v4")||"null")||JSON.parse(JSON.stringify(DEFAULT));
+let cfg=JSON.parse(localStorage.getItem("ota_calc_v5")||"null")||JSON.parse(JSON.stringify(DEFAULT));
+if(!cfg.defectCats)cfg.defectCats=JSON.parse(JSON.stringify(DEFECT_CATS_DEFAULT));
+if(!cfg.adminPin)cfg.adminPin="1234";
 let selectedLine=-1,selectedStorage=-1,battery=-1,checkedDefects={},consultValues={};
 let dropdownOpen=false,filteredList=[],hlIndex=-1;
 
@@ -266,7 +283,7 @@ function setBattery(v){
 }
 function renderDefects(){
  let line=cfg.modelLines[selectedLine];
- $("defects").innerHTML=DEFECT_CATS.map(cat=>{
+ $("defects").innerHTML=cfg.defectCats.map(cat=>{
   let val=line.defects[cat.key];
   let isConsult=val===null||val===undefined;
   let isChecked=!!checkedDefects[cat.key];
@@ -294,7 +311,7 @@ function calc(){
  let line=cfg.modelLines[selectedLine],s=line.storages[selectedStorage];
  let battDisc=battery===1?line.battDisc:0;
  let defectTotal=0;
- DEFECT_CATS.forEach(cat=>{
+ cfg.defectCats.forEach(cat=>{
   if(!checkedDefects[cat.key])return;
   let val=line.defects[cat.key];
   defectTotal+=(val===null||val===undefined)?(consultValues[cat.key]||0):val;
@@ -361,14 +378,32 @@ function moneyInputValue(id){
 }
 function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800)}
 
-function openAdmin(){renderAdmin();$("admin").classList.add("open")}
+function openAdmin(){
+ $("pinInput").value="";
+ $("pinModal").classList.add("open");
+ setTimeout(()=>$("pinInput").focus(),50);
+}
+function closePinModal(){$("pinModal").classList.remove("open")}
+function confirmPin(){
+ if($("pinInput").value===cfg.adminPin){
+  closePinModal();
+  renderAdmin();
+  $("admin").classList.add("open");
+ }else{
+  toast("PIN incorreto");
+  $("pinInput").value="";
+  $("pinInput").focus();
+ }
+}
 function closeAdmin(){$("admin").classList.remove("open")}
 function renderAdmin(){
+ $("adminPinInput").value=cfg.adminPin;
+ $("adminDefectCats").innerHTML=cfg.defectCats.map((cat,i)=>`<div class="admin-row2"><input id="catLabel${i}" value="${cat.label}" placeholder="Nome do defeito"><span></span><button onclick="removeDefectCat(${i})">Excluir</button></div>`).join("");
  $("adminLines").innerHTML=cfg.modelLines.map((l,i)=>`
  <div class="line-block">
- <div class="admin-row2"><input id="ln${i}" value="${l.name}" placeholder="Nome do modelo"><input id="lb${i}" type="number" value="${l.battDisc}" placeholder="R$ bateria"><button onclick="removeLine(${i})">Excluir</button></div>
+ <div class="admin-row2"><div class="labeled-field"><label>Modelo</label><input id="ln${i}" value="${l.name}"></div><div class="labeled-field"><label>Valor troca de bateria</label><input id="lb${i}" type="number" value="${l.battDisc}"></div><button onclick="removeLine(${i})">Excluir</button></div>
  <h5>Defeitos (R$, deixe em branco pra "Consultar")</h5>
- <div class="defect-admin-grid">${DEFECT_CATS.map(cat=>`<div><label>${cat.label}</label><input id="ld${i}_${cat.key}" type="number" value="${l.defects[cat.key]===null||l.defects[cat.key]===undefined?'':l.defects[cat.key]}" placeholder="Consultar"></div>`).join("")}</div>
+ <div class="defect-admin-grid">${cfg.defectCats.map(cat=>`<div><label>${cat.label}</label><input id="ld${i}_${cat.key}" type="number" value="${l.defects[cat.key]===null||l.defects[cat.key]===undefined?'':l.defects[cat.key]}" placeholder="Consultar"></div>`).join("")}</div>
  <h5>Armazenamentos (mín / máx)</h5>
  <div id="storages${i}">${l.storages.map((s,j)=>`<div class="admin-row3"><input id="sl${i}_${j}" value="${s.label}" placeholder="Armazenamento"><input id="smin${i}_${j}" type="number" value="${s.min}" placeholder="mín"><input id="smax${i}_${j}" type="number" value="${s.max}" placeholder="máx"><button onclick="removeStorage(${i},${j})">Excluir</button></div>`).join("")}</div>
  </div>`).join("");
@@ -377,10 +412,24 @@ function renderAdmin(){
 function addLine(){cfg.modelLines.push({name:"Novo modelo",battDisc:500,storages:[{label:"128 GB",min:0,max:0}],defects:{tampa:500,vidro:500,tela:500,placa:500,faceid:500}});renderAdmin()}
 function removeLine(i){cfg.modelLines.splice(i,1);renderAdmin()}
 function removeStorage(i,j){cfg.modelLines[i].storages.splice(j,1);renderAdmin()}
+function addDefectCat(){
+ let key="d"+Date.now();
+ cfg.defectCats.push({key,label:"Novo defeito"});
+ cfg.modelLines.forEach(l=>{l.defects[key]=null});
+ renderAdmin();
+}
+function removeDefectCat(i){
+ let key=cfg.defectCats[i].key;
+ cfg.defectCats.splice(i,1);
+ cfg.modelLines.forEach(l=>{delete l.defects[key]});
+ renderAdmin();
+}
 function saveSettings(){
+ cfg.adminPin=($("adminPinInput").value.trim()||cfg.adminPin).slice(0,4);
+ cfg.defectCats=cfg.defectCats.map((cat,i)=>({key:cat.key,label:$("catLabel"+i).value||cat.label}));
  cfg.modelLines=cfg.modelLines.map((l,i)=>{
   let defects={};
-  DEFECT_CATS.forEach(cat=>{
+  cfg.defectCats.forEach(cat=>{
    let raw=$("ld"+i+"_"+cat.key).value.trim();
    defects[cat.key]=raw===""?null:(+raw||0);
   });
@@ -392,7 +441,7 @@ function saveSettings(){
   };
  });
  cfg.installRates=cfg.installRates.map((r,i)=>+$("rate"+i).value||0);
- localStorage.setItem("ota_calc_v4",JSON.stringify(cfg));
+ localStorage.setItem("ota_calc_v5",JSON.stringify(cfg));
  resetAll();
  renderParcel();
  closeAdmin();
@@ -404,4 +453,3 @@ renderParcel();
 </script>
 </body>
 </html>
-```
