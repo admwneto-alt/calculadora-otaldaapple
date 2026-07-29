@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f7f8">
+<title>O Tal da Apple — Avaliação de Aparelho</title>
+<style>
+:root{--bg:#f6f6f7;--card:#fff;--text:#111;--muted:#6b6b70;--line:#e5e5e7;--soft:#f1f1f3;--blue:#111;--green:#22a447;--yellow:#e6a500;--red:#d33;--shadow:0 10px 35px rgba(0,0,0,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text)}
+button,input,select{font:inherit}.wrap{max-width:760px;margin:auto;padding:18px 16px 50px}
+.top{display:flex;align-items:center;justify-content:space-between;padding:7px 0 20px}.brand{font-weight:900;letter-spacing:-.5px;font-size:17px}.toplinks{display:flex;gap:8px}.toplinks button{border:0;background:transparent;font-weight:700;color:#555;padding:8px;cursor:pointer}
+.hero{text-align:center;padding:24px 0 22px}.eyebrow{font-weight:800;font-size:13px;color:#666}.hero h1{font-size:clamp(38px,8vw,62px);line-height:.98;letter-spacing:-3px;margin:8px 0}.hero h1 span{display:block;font-weight:800}.hero p{margin:14px auto 0;color:var(--muted);font-size:15px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#e9e9eb;border-radius:14px;padding:4px;margin:0 auto 18px;max-width:520px}.tabs button{border:0;background:transparent;border-radius:11px;padding:12px;font-weight:800;color:#666;cursor:pointer}.tabs button.active{background:#fff;color:#111;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin:14px 0;box-shadow:var(--shadow)}
+.step{font-size:12px;color:#888;font-weight:900;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px}.question{font-size:19px;font-weight:850;margin-bottom:12px}
+.search{position:relative}.search input{padding-left:42px}.search:before{content:"⌕";position:absolute;left:15px;top:10px;font-size:23px;color:#777;z-index:1}
+input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:13px;padding:13px 14px;outline:0}input:focus,select:focus{border-color:#111}
+.model-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.model{border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px;text-align:left;cursor:pointer}.model strong{display:block}.model small{color:#777}.model.selected{border:2px solid #111;padding:12px}
+.price-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.price{font-size:25px;font-weight:900}.change{border:0;background:#eee;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+.battery{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.battery button{border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px 8px;cursor:pointer;text-align:left}.battery button.active{border:2px solid #111;padding:12px}.battery .icon{font-size:19px}.battery b{display:block;margin-top:4px}.battery small{display:block;color:#777;margin-top:3px}
+.defects{display:grid;grid-template-columns:1fr 1fr;gap:9px}.defect{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff;cursor:pointer}.defect span{font-weight:700}.defect small{color:#b22;display:block;margin-top:2px}.defect input{width:19px;height:19px;accent-color:#111}
+.sim{background:#111;color:#fff;border-radius:20px;padding:20px;margin-top:15px}.sim .muted{color:#aaa;font-size:12px}.sim .big{font-size:34px;font-weight:900;margin:3px 0 15px}.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.simbox{background:#1d1d1f;border-radius:14px;padding:13px}.simbox b{font-size:18px}.simbox small{display:block;color:#aaa}
+.pay-toggle{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pay-toggle button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;cursor:pointer}.pay-toggle button.active{border:2px solid #111;padding:13px}.pay-toggle b{display:block}.pay-toggle small{color:#777}
+.table{width:100%;border-collapse:collapse;margin-top:10px}.table th,.table td{text-align:left;border-bottom:1px solid var(--line);padding:10px 5px}.table th{font-size:12px;color:#777}.table td:last-child,.table th:last-child{text-align:right}
+.whatsapp{background:#25d366!important;color:#fff!important;border:0!important;width:100%;padding:14px!important;border-radius:13px!important;font-weight:900;cursor:pointer;margin-top:12px}
+.copy{background:#111;color:#fff;border:0;width:100%;padding:14px;border-radius:13px;font-weight:900;cursor:pointer;margin-top:9px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field label{display:block;font-size:12px;color:#777;font-weight:800;margin:0 0 5px}
+.preview{background:#f4f4f5;border-radius:14px;padding:14px;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.admin{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10;padding:30px 16px;overflow:auto}.admin.open{display:block}.admin-card{max-width:760px;margin:auto;background:#fff;border-radius:22px;padding:20px}.admin-head{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eee;border-radius:10px;padding:8px 11px;cursor:pointer}.admin-row{display:grid;grid-template-columns:1fr 120px 100px;gap:7px;margin:8px 0}.save{background:#111;color:#fff;border:0;border-radius:12px;padding:13px 18px;font-weight:800;cursor:pointer}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:12px 16px;border-radius:12px;display:none;z-index:20}
+@media(max-width:600px){.wrap{padding:12px 12px 35px}.model-grid,.fields{grid-template-columns:1fr}.battery{grid-template-columns:1fr}.defects{grid-template-columns:1fr}.sim-grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.admin-row{grid-template-columns:1fr 100px 70px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand">O Tal da Apple</div><div class="toplinks"><button onclick="openAdmin()">⚙️</button></div></header>
+
+<section class="hero"><div class="eyebrow">O Tal da Apple</div><h1>Calculadora<span>de Avaliação</span></h1><p>Avalie o aparelho do cliente de forma rápida e padronizada</p></section>
+
+<div class="tabs"><button class="active">📱 Avaliação</button><button onclick="document.getElementById('parcel').scrollIntoView({behavior:'smooth'})">💳 Upgrade</button></div>
+
+<section class="card">
+<div class="step">Passo 1</div><div class="question">Qual é o aparelho do cliente?</div><div style="background:#f4f4f5;border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:13px;color:#555"><b>Importante:</b> este valor é apenas a avaliação do aparelho usado do cliente.</div>
+<div class="search"><input id="search" placeholder="Buscar aparelho... ex: 15 Pro Max 256"></div>
+<div id="models" class="model-grid"></div>
+<div class="price-row"><div><div class="price" id="basePrice">R$ —</div><small>valor-base de avaliação</small></div><button class="change" onclick="clearModel()">trocar</button></div>
+</section>
+
+<section class="card">
+<div class="step">Passo 2</div><div class="question">Estado da bateria</div>
+<div class="battery">
+<button data-bat="0" onclick="setBattery(0)"><span class="icon">🟢</span><b>Acima de 85%</b><small>Sem desconto</small></button>
+<button data-bat="1" onclick="setBattery(1)"><span class="icon">🟡</span><b>Entre 60–85%</b><small id="bat1">−R$ 0</small></button>
+<button data-bat="2" onclick="setBattery(2)"><span class="icon">🔴</span><b>Abaixo de 60%</b><small id="bat2">−R$ 0</small></button>
+</div>
+</section>
+
+<section class="card">
+<div class="step">Passo 3</div><div class="question">Defeitos presentes</div>
+<div id="defects" class="defects"></div>
+<div class="sim"><div class="muted">Simulador</div><div class="muted">Valor de avaliação</div><div class="big" id="finalPrice">R$ 0,00</div><div class="sim-grid"><div class="simbox"><small>Descontos</small><b id="discounts">R$ 0,00</b></div><div class="simbox"><small>Valor final</small><b id="final2">R$ 0,00</b></div></div></div>
+</section>
+
+<section class="card" id="parcel">
+<div class="step">Upgrade</div><div class="question">Upgrade / pagamento da diferença</div>
+<div class="field"><label>Valor do aparelho novo ou serviço</label><input id="newPrice" type="number" placeholder="ex: 6500" oninput="calc()"></div>
+<div class="sim" style="margin-top:12px"><div class="muted">Diferença a pagar</div><div class="big" id="diffPrice">R$ 0,00</div><div class="sim-grid"><div class="simbox"><small>Avaliação do usado</small><b id="tradeInRef">R$ 0,00</b></div><div class="simbox"><small>Aparelho novo</small><b id="newPriceRef">R$ 0,00</b></div></div></div>
+<div class="pay-toggle" style="margin-top:15px"><button id="machine" class="active" onclick="setPay('machine')">📱 <b>Maquininha</b><small>Presencial · D+1</small></button><button id="link" onclick="setPay('link')">💻 <b>Link</b><small>Online</small></button></div>
+<div style="margin-top:15px" class="field"><label>Bandeira do cartão</label><select id="brand" onchange="calc()"><option value="debit">💳 Débito</option><option value="visa">Visa / Mastercard</option><option value="elo">Elo / Hipercard</option></select></div>
+<div class="question" style="margin-top:18px">Parcelas</div>
+<select id="installments" onchange="calc()"><option value="1">À vista</option><option value="2">2x</option><option value="3">3x</option><option value="4">4x</option><option value="5">5x</option><option value="6">6x</option><option value="7">7x</option><option value="8">8x</option><option value="9">9x</option><option value="10">10x</option><option value="11">11x</option><option value="12">12x</option><option value="13">13x</option><option value="14">14x</option><option value="15">15x</option><option value="16">16x</option><option value="17">17x</option><option value="18">18x</option></select>
+<table class="table"><thead><tr><th>Parcelas</th><th>Valor/x</th><th>Total</th></tr></thead><tbody id="parcelRows"></tbody></table>
+</section>
+
+<section class="card">
+<div class="step">Mensagem WhatsApp</div><div class="question">Dados do aparelho avaliado</div>
+<div class="fields">
+<div class="field"><label>Modelo do aparelho</label><input id="adModel" placeholder="ex: iPhone 15 Pro Max"></div>
+<div class="field"><label>Armazenamento</label><input id="storage" placeholder="256GB"></div>
+<div class="field"><label>Cor</label><input id="color" placeholder="ex: Rosa"></div>
+<div class="field"><label>Bateria %</label><input id="batteryPct" type="number" placeholder="86"></div>
+<div class="field"><label>Código interno</label><input id="code" placeholder="ex: 15396"></div>
+<div class="field"><label>Garantia (meses)</label><input id="warranty" type="number" value="12"></div>
+</div>
+<div class="question" style="margin-top:18px">💬 Prévia da mensagem</div>
+<div class="preview" id="preview">Preencha os campos acima...</div>
+<button class="copy" onclick="copyMessage()">📋 Copiar para WhatsApp</button>
+<button class="whatsapp" onclick="sendWhatsApp()">Enviar pelo WhatsApp</button>
+</section>
+</div>
+
+<div class="admin" id="admin"><div class="admin-card">
+<div class="admin-head"><h2>🔒 Área Admin — Tabela de Avaliação</h2><button class="close" onclick="closeAdmin()">✕</button></div>
+<p style="color:#666">
