@@ -92,4 +92,98 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 
 <div class="admin" id="admin"><div class="admin-card">
 <div class="admin-head"><h2>🔒 Área Admin — Tabela de Avaliação</h2><button class="close" onclick="closeAdmin()">✕</button></div>
-<p style="color:#666">
+<p style="color:#666">Aqui você cadastra somente os <b>valores-base de avaliação dos aparelhos dos clientes</b>, além dos descontos e regras. Não são preços de venda.</p>
+<h3>Valores-base de avaliação</h3><div id="adminProducts"></div>
+<button class="save" style="background:#eee;color:#111;margin-top:8px" onclick="addProduct()">+ Adicionar aparelho</button>
+<h3>Descontos por Defeito</h3><div class="admin-row"><input id="dTela" placeholder="Tela quebrada"><input id="vTela" type="number" value="500"><button onclick="saveSettings()">Salvar</button></div>
+<div class="admin-row"><input id="dCamera" placeholder="Câmera"><input id="vCamera" type="number" value="300"><button onclick="saveSettings()">Salvar</button></div>
+<div class="admin-row"><input id="dFace" placeholder="Face ID"><input id="vFace" type="number" value="500"><button onclick="saveSettings()">Salvar</button></div>
+<div class="admin-row"><input id="dBack" placeholder="Tampa traseira"><input id="vBack" type="number" value="300"><button onclick="saveSettings()">Salvar</button></div>
+<h3>Desconto da bateria</h3><div class="admin-row"><input placeholder="60–85%"><input id="vBat1" type="number" value="200"><span></span></div>
+<div class="admin-row"><input placeholder="Abaixo de 60%"><input id="vBat2" type="number" value="400"><span></span></div>
+<h3>WhatsApp da loja</h3><input id="wa" placeholder="5512999999999">
+<div style="margin-top:15px;display:flex;gap:8px;flex-wrap:wrap"><button class="save" onclick="saveSettings()">Salvar configurações</button><button class="save" style="background:#555" onclick="exportConfig()">📤 Exportar configuração</button></div>
+<p style="color:#999;font-size:12px;margin-top:8px">Exportar copia a tabela atual pra área de transferência. Cole aqui no chat com o Claude quando quiser publicar os valores atualizados no site de todo mundo.</p>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT={
+products:[
+["iPhone 13 128GB",2390],["iPhone 14 128GB",3890],["iPhone 15 128GB",4190],
+["iPhone 15 Pro 128GB",0],["iPhone 15 Pro Max 256GB",0],["iPhone 16 128GB",4690],
+["iPhone 16 Pro 128GB",0],["iPhone 16 Pro Max 256GB",0],["iPhone 17 Pro 256GB",4990],
+["iPhone 17 Pro Max 256GB",7400]
+],
+defects:{tela:["Tela quebrada",500],camera:["Câmera",300],face:["Face ID",500],back:["Tampa traseira",300]},
+bat1:200,bat2:400,wa:"5512999999999"
+};
+let cfg=JSON.parse(localStorage.getItem("ota_calc")||"null")||DEFAULT;
+let selected=-1,battery=0,pay="machine",checked={};
+
+const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n||0);
+const $=id=>document.getElementById(id);
+
+function renderProducts(){
+ let q=$("search").value.toLowerCase();
+ $("models").innerHTML=cfg.products.filter(p=>p[0].toLowerCase().includes(q)).map((p,i)=>`<button class="model ${selected===i?'selected':''}" onclick="choose(${i})"><strong>${p[0]}</strong><small>${money(p[1])}</small></button>`).join("")||"<div style='color:#777'>Nenhum modelo encontrado.</div>";
+}
+function choose(i){selected=i;renderProducts();$("basePrice").textContent=money(cfg.products[i][1]);calc();updatePreview()}
+function clearModel(){selected=-1;$("basePrice").textContent="R$ —";renderProducts();calc()}
+function setBattery(v){battery=v;document.querySelectorAll("[data-bat]").forEach(x=>x.classList.remove("active"));document.querySelector(`[data-bat="${v}"]`).classList.add("active");calc()}
+function renderDefects(){
+ $("defects").innerHTML=Object.entries(cfg.defects).map(([k,v])=>`<label class="defect"><span>${v[0]}<small>−${money(v[1])}</small></span><input type="checkbox" ${checked[k]?'checked':''} onchange="checked['${k}']=this.checked;calc()"></label>`).join("");
+ $("bat1").textContent="−"+money(cfg.bat1);$("bat2").textContent="−"+money(cfg.bat2);
+}
+function calc(){
+ let base=selected<0?0:cfg.products[selected][1],disc=0;
+ if(battery===1)disc+=cfg.bat1;if(battery===2)disc+=cfg.bat2;
+ Object.keys(checked).forEach(k=>{if(checked[k])disc+=cfg.defects[k]?.[1]||0});
+ let final=Math.max(0,base-disc);
+ $("discounts").textContent=money(disc);$("finalPrice").textContent=money(final);$("final2").textContent=money(final);
+ let newPrice=+$("newPrice").value||0;
+ let diff=Math.max(0,newPrice-final);
+ let credit=Math.max(0,final-newPrice);
+ $("tradeInRef").textContent=money(final);
+ $("newPriceRef").textContent=money(newPrice);
+ $("diffPrice").textContent=credit>0?"Crédito de "+money(credit):money(diff);
+ let n=+$("installments").value, fee=feeRate(n,pay,$("brand").value), total=diff*(1+fee), per=n>1?total/n:total;
+ $("parcelRows").innerHTML=diff<=0?`<tr><td colspan="3">${credit>0?"Sem valor a parcelar — cliente tem crédito de "+money(credit):"Informe o valor do aparelho novo"}</td></tr>`:`<tr><td>${n===1?'À vista':n+'x'}</td><td>${money(per)}</td><td>${money(total)}</td></tr>`;
+}
+function feeRate(n,mode,brand){if(n===1)return brand==="debit"?0:.012;let rates=[0,.045,.065,.085,.105,.125,.145,.165,.185,.205,.225,.245,.265,.285,.305,.325,.345,.365,.385];let r=rates[n]||.385;return mode==="link"?r+.025:r}
+function setPay(v){pay=v;$("machine").classList.toggle("active",v==="machine");$("link").classList.toggle("active",v==="link");calc()}
+function message(){
+ let model=$("adModel").value||"iPhone",storage=$("storage").value||"",color=$("color").value||"",bat=$("batteryPct").value||"",code=$("code").value||"",war=$("warranty").value||"12";
+ let final=$("final2").textContent;
+ let newPrice=+$("newPrice").value||0,upgradeLine="";
+ if(newPrice>0){
+  let diffTxt=$("diffPrice").textContent;
+  upgradeLine=`\n📲 Aparelho novo: ${money(newPrice)}\n💳 ${diffTxt.startsWith("Crédito")?diffTxt:"Diferença a pagar: "+diffTxt}\n`;
+ }
+ return `📱 ${model} ${storage}${color?" • "+color:""}\n🔋 Bateria: ${bat}%\n🏷️ Código: ${code||"—"}\n🛡️ Garantia: ${war} meses\n\n💰 Valor de avaliação: ${final}${upgradeLine}\nValor de avaliação calculado conforme modelo, bateria e defeitos informados.`;
+}
+function updatePreview(){$("preview").textContent=message()}
+["adModel","storage","color","batteryPct","code","warranty","newPrice"].forEach(id=>$(id).addEventListener("input",updatePreview));
+$("search").addEventListener("input",renderProducts);
+function copyMessage(){navigator.clipboard.writeText(message());toast("Mensagem copiada!")}
+function sendWhatsApp(){window.open("https://wa.me/"+cfg.wa+"?text="+encodeURIComponent(message()),"_blank")}
+function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800)}
+function openAdmin(){renderAdmin();$("admin").classList.add("open")}
+function closeAdmin(){$("admin").classList.remove("open")}
+function renderAdmin(){
+ $("adminProducts").innerHTML=cfg.products.map((p,i)=>`<div class="admin-row"><input id="pn${i}" value="${p[0]}"><input id="pv${i}" type="number" value="${p[1]}"><button onclick="removeProduct(${i})">Excluir</button></div>`).join("");
+ $("vTela").value=cfg.defects.tela[1];$("vCamera").value=cfg.defects.camera[1];$("vFace").value=cfg.defects.face[1];$("vBack").value=cfg.defects.back[1];$("vBat1").value=cfg.bat1;$("vBat2").value=cfg.bat2;$("wa").value=cfg.wa;
+}
+function saveSettings(){
+ cfg.products=cfg.products.map((p,i)=>[$("pn"+i).value,+$("pv"+i).value||0]);
+ cfg.defects={tela:[$("dTela").value||"Tela quebrada",+$("vTela").value||0],camera:[$("dCamera").value||"Câmera",+$("vCamera").value||0],face:[$("dFace").value||"Face ID",+$("vFace").value||0],back:[$("dBack").value||"Tampa traseira",+$("vBack").value||0]};
+ cfg.bat1=+$("vBat1").value||0;cfg.bat2=+$("vBat2").value||0;cfg.wa=$("wa").value||DEFAULT.wa;
+ localStorage.setItem("ota_calc",JSON.stringify(cfg));renderProducts();renderDefects();calc();closeAdmin();toast("Configurações salvas!");
+}
+function removeProduct(i){cfg.products.splice(i,1);renderAdmin()}
+function addProduct(){cfg.products.push(["Novo aparelho",0]);renderAdmin()}
+function exportConfig(){navigator.clipboard.writeText(JSON.stringify(cfg,null,2));toast("Configuração copiada!")}
+renderProducts();renderDefects();setBattery(0);calc();
+</script>
+</body>
+</html>
