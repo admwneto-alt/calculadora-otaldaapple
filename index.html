@@ -242,4 +242,166 @@ function renderDefects(){
   let isChecked=!!checkedDefects[cat.key];
   let box=`<label class="defect"><span>${cat.label}<small>${isConsult?'Consultar':'−'+money(val)}</small></span><input type="checkbox" ${isChecked?'checked':''} onchange="toggleDefect('${cat.key}',this.checked)"></label>`;
   if(isConsult&&isChecked){
-   box+=
+   box+=`<div class="field full"><label>Valor consultado — ${cat.label}</label><div class="money-input"><span class="prefix">R$</span><input type="text" inputmode="numeric" value="${consultValues[cat.key]?Number(consultValues[cat.key]).toLocaleString('pt-BR'):''}" oninput="setConsultValue('${cat.key}',this)"><span class="suffix">,00</span></div></div>`;
+  }
+  return box;
+ }).join("");
+}
+function toggleDefect(key,val){
+ checkedDefects[key]=val;
+ if(!val)delete consultValues[key];
+ renderDefects();
+ calc();
+}
+function setConsultValue(key,el){
+ let digits=el.value.replace(/\D/g,"");
+ el.value=digits?Number(digits).toLocaleString("pt-BR"):"";
+ consultValues[key]=+digits||0;
+ calc();
+}
+function calc(){
+ if(selectedLine<0||selectedStorage<0)return;
+ let line=cfg.modelLines[selectedLine],s=line.storages[selectedStorage];
+ let battDisc=battery===1?line.battDisc:0;
+ let defectTotal=0;
+ cfg.defectCats.forEach(cat=>{
+  if(!checkedDefects[cat.key])return;
+  let val=line.defects[cat.key];
+  defectTotal+=(val===null||val===undefined)?(consultValues[cat.key]||0):val;
+ });
+ let disc=battDisc+defectTotal;
+ let raw=s.value-disc;
+ let final=Math.max(0,raw);
+ $("baseRange").textContent=money(s.value);
+ $("discRange").textContent=money(disc);
+ $("finalRange").textContent=money(final);
+ $("warnBox").classList.toggle("hidden",raw>=0);
+ if(battery>=0){
+  $("upgradeCard").classList.remove("hidden");
+  $("tradeRef").textContent=money(final);
+  let quoted=moneyInputValue("quotedPrice");
+  $("quotedRef").textContent=money(quoted);
+  let diff=Math.max(0,quoted-final);
+  let credit=Math.max(0,final-quoted);
+  if(quoted>0&&final>=quoted){
+   $("diffRange").textContent="Crédito de "+money(credit);
+  }else{
+   $("diffRange").textContent=money(diff);
+  }
+  window._lastDiff=diff;
+ }
+}
+function resetAll(){
+ selectedLine=-1;selectedStorage=-1;battery=-1;checkedDefects={};consultValues={};
+ $("search").value="";
+ $("quotedPrice").value="";
+ $("modelBadgeRow").classList.add("hidden");
+ $("stepStorage").classList.add("hidden");
+ $("badgeRow").classList.add("hidden");
+ $("step2").classList.add("hidden");
+ $("step3").classList.add("hidden");
+ $("upgradeCard").classList.add("hidden");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function useCalculatedDiff(){
+ if(window._lastDiff===undefined){toast("Calcule um upgrade na aba Compra primeiro");return}
+ $("parcelValue").value=Math.round(window._lastDiff);
+ renderParcel();
+}
+function renderParcel(){
+ let v=+$("parcelValue").value||0;
+ $("parcelRows").innerHTML=cfg.installRates.map((rate,idx)=>{
+  let n=idx+1;
+  let total=v/(1-rate/100);
+  total=Math.ceil(total*100)/100;
+  let per=Math.ceil((total/n)*100)/100;
+  let cls=n<=12?"row-link":"row-presencial";
+  return `<tr class="${cls}"><td>${n===1?'À vista':n+'x'}</td><td>${rate}%</td><td>${money(per)}</td><td>${money(total)}</td></tr>`;
+ }).join("");
+}
+
+function formatMoneyInput(el){
+ let digits=el.value.replace(/\D/g,"");
+ el.value=digits?Number(digits).toLocaleString("pt-BR"):"";
+}
+function moneyInputValue(id){
+ return +($(id).value.replace(/\D/g,""))||0;
+}
+function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800)}
+
+function openAdmin(){
+ $("pinInput").value="";
+ $("pinModal").classList.add("open");
+ setTimeout(()=>$("pinInput").focus(),50);
+}
+function closePinModal(){$("pinModal").classList.remove("open")}
+function confirmPin(){
+ if($("pinInput").value===cfg.adminPin){
+  closePinModal();
+  renderAdmin();
+  $("admin").classList.add("open");
+ }else{
+  toast("PIN incorreto");
+  $("pinInput").value="";
+  $("pinInput").focus();
+ }
+}
+function closeAdmin(){$("admin").classList.remove("open")}
+function renderAdmin(){
+ $("adminPinInput").value=cfg.adminPin;
+ $("adminDefectCats").innerHTML=cfg.defectCats.map((cat,i)=>`<div class="admin-row2"><input id="catLabel${i}" value="${cat.label}" placeholder="Nome do defeito"><span></span><button onclick="removeDefectCat(${i})">Excluir</button></div>`).join("");
+ $("adminLines").innerHTML=cfg.modelLines.map((l,i)=>`
+ <div class="line-block">
+ <div class="admin-row2"><div class="labeled-field"><label>Modelo</label><input id="ln${i}" value="${l.name}"></div><div class="labeled-field"><label>Valor troca de bateria</label><input id="lb${i}" type="number" value="${l.battDisc}"></div><button onclick="removeLine(${i})">Excluir</button></div>
+ <h5>Defeitos (R$, deixe em branco pra "Consultar")</h5>
+ <div class="defect-admin-grid">${cfg.defectCats.map(cat=>`<div><label>${cat.label}</label><input id="ld${i}_${cat.key}" type="number" value="${l.defects[cat.key]===null||l.defects[cat.key]===undefined?'':l.defects[cat.key]}" placeholder="Consultar"></div>`).join("")}</div>
+ <h5>Armazenamentos (valor sugerido de compra)</h5>
+ <div id="storages${i}">${l.storages.map((s,j)=>`<div class="admin-row2"><input id="sl${i}_${j}" value="${s.label}" placeholder="Armazenamento"><input id="sval${i}_${j}" type="number" value="${s.value}" placeholder="valor"><button onclick="removeStorage(${i},${j})">Excluir</button></div>`).join("")}</div>
+ </div>`).join("");
+ $("rateGrid").innerHTML=cfg.installRates.map((r,i)=>`<div><label>${i+1}x</label><input id="rate${i}" type="number" step="0.1" value="${r}"></div>`).join("");
+}
+function addLine(){cfg.modelLines.push({name:"Novo modelo",battDisc:500,storages:[{label:"128 GB",value:0}],defects:{tampa:500,vidro:500,tela:500,placa:500,faceid:500}});renderAdmin()}
+function removeLine(i){cfg.modelLines.splice(i,1);renderAdmin()}
+function removeStorage(i,j){cfg.modelLines[i].storages.splice(j,1);renderAdmin()}
+function addDefectCat(){
+ let key="d"+Date.now();
+ cfg.defectCats.push({key,label:"Novo defeito"});
+ cfg.modelLines.forEach(l=>{l.defects[key]=null});
+ renderAdmin();
+}
+function removeDefectCat(i){
+ let key=cfg.defectCats[i].key;
+ cfg.defectCats.splice(i,1);
+ cfg.modelLines.forEach(l=>{delete l.defects[key]});
+ renderAdmin();
+}
+function saveSettings(){
+ cfg.adminPin=($("adminPinInput").value.trim()||cfg.adminPin).slice(0,4);
+ cfg.defectCats=cfg.defectCats.map((cat,i)=>({key:cat.key,label:$("catLabel"+i).value||cat.label}));
+ cfg.modelLines=cfg.modelLines.map((l,i)=>{
+  let defects={};
+  cfg.defectCats.forEach(cat=>{
+   let raw=$("ld"+i+"_"+cat.key).value.trim();
+   defects[cat.key]=raw===""?null:(+raw||0);
+  });
+  return{
+   name:$("ln"+i).value||l.name,
+   battDisc:+$("lb"+i).value||0,
+   defects,
+   storages:l.storages.map((s,j)=>({label:$("sl"+i+"_"+j).value||s.label,value:+$("sval"+i+"_"+j).value||0}))
+  };
+ });
+ cfg.installRates=cfg.installRates.map((r,i)=>+$("rate"+i).value||0);
+ localStorage.setItem("ota_calc_v7",JSON.stringify(cfg));
+ resetAll();
+ renderParcel();
+ closeAdmin();
+ toast("Configurações salvas!");
+}
+function exportConfig(){navigator.clipboard.writeText(JSON.stringify(cfg,null,2));toast("Configuração copiada!")}
+
+renderParcel();
+</script>
+</body>
+</html>
