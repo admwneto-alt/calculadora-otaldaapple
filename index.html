@@ -68,7 +68,7 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 <section class="card hidden" id="stepStorage">
 <div class="step">Passo 1.1</div><div class="question">Armazenamento</div>
 <div id="storageOptions" class="pill-grid"></div>
-<div class="badge-row hidden" id="badgeRow"><div><div class="badge" id="badgeRange">R$ —</div><small>referência mín–máx</small></div></div>
+<div class="badge-row hidden" id="badgeRow"><div><div class="badge" id="badgeRange">R$ —</div><small>valor sugerido de compra</small></div></div>
 </section>
 
 <section class="card hidden" id="step2">
@@ -141,8 +141,8 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 
 <script>
 const DEFECT_CATS_DEFAULT=[{"key": "tampa", "label": "Tampa traseira"}, {"key": "vidro", "label": "Vidro frontal"}, {"key": "tela", "label": "Troca de tela"}, {"key": "placa", "label": "Reparo de placa"}, {"key": "faceid", "label": "Face ID"}, {"key": "d1785354205347", "label": "Camera"}, {"key": "d1785354231317", "label": "Alto falante / Microfone"}];
-const DEFAULT={"adminPin": "1234","defectCats": [{"key": "tampa","label": "Tampa traseira"},{"key": "vidro","label": "Vidro frontal"},{"key": "tela","label": "Troca de tela"},{"key": "placa","label": "Reparo de placa"},{"key": "faceid","label": "Face ID"},{"key": "d1785354205347","label": "Camera"},{"key": "d1785354231317","label": "Alto falante / Microfone"}],"modelLines": [{"name": "iPhone 11","battDisc": 170,"defects": {"tampa": 150,"vidro": 100,"tela": 210,"placa": 200,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","min": 550,"max": 700},{"label": "128 GB","min": 700,"max": 900},{"label": "256 GB","min": 650,"max": 850}]},{"name": "iPhone 11 Pro","battDisc": 200,"defects": {"tampa": 170,"vidro": 120,"tela": 300,"placa": 230,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","min": 700,"max": 900},{"label": "256 GB","min": 700,"max": 950}]},{"name": "iPhone 11 Pro Max","battDisc": 200,"defects": {"tampa": 180,"vidro": 130,"tela": 315,"placa": 230,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","min": 800,"max": 1000},{"label": "256 GB","min": 800,"max": 1050},{"label": "512 GB","min": 750,"max": 1000}]},{"name": "iPhone 12 mini","battDisc": 160,"defects": {"tampa": 170,"vidro": 120,"tela": null,"placa": 250,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","min": 450,"max": 600},{"label": "128 GB","min": 450,"max": 600}]},{"name": "iPhone 12","battDisc": 180,"defects": {"tampa": 170,"vidro": 120,"tela": 340,"placa": 250,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","min": 750,"max": 950},{"label": "128 GB","min": 950,"max": 1250},{"label": "256 GB","min": 1000,"max": 1250}]},{"name": "iPhone 12 Pro","battDisc": 180,"defects": {"tampa": 180,"vidro": 120,"tela": null,"placa": 300,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1050,"max": 1350},{"label": "256 GB","min": 1200,"max": 1550},{"label": "512 GB","min": 1350,"max": 1750}]},{"name": "iPhone 12 Pro Max","battDisc": 210,"defects": {"tampa": 200,"vidro": 150,"tela": 375,"placa": 300,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1300,"max": 1700},{"label": "256 GB","min": 1550,"max": 2000},{"label": "512 GB","min": 1900,"max": 2450}]},{"name": "iPhone 13 mini","battDisc": 500,"defects": {"tampa": 170,"vidro": 150,"tela": null,"placa": 300,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 700,"max": 900},{"label": "256 GB","min": 700,"max": 900}]},{"name": "iPhone 13","battDisc": 180,"defects": {"tampa": 180,"vidro": 160,"tela": 390,"placa": 300,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1200,"max": 1550},{"label": "256 GB","min": 1300,"max": 1700},{"label": "512 GB","min": 1400,"max": 1800}]},{"name": "iPhone 13 Pro","battDisc": 210,"defects": {"tampa": 200,"vidro": 180,"tela": 420,"placa": 350,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1500,"max": 1950},{"label": "256 GB","min": 1650,"max": 2150},{"label": "512 GB","min": 1800,"max": 2350}]},{"name": "iPhone 13 Pro Max","battDisc": 250,"defects": {"tampa": 210,"vidro": 180,"tela": 420,"placa": 350,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1750,"max": 2300},{"label": "256 GB","min": 1850,"max": 2400},{"label": "512 GB","min": 1950,"max": 2500}]},{"name": "iPhone 14","battDisc": 200,"defects": {"tampa": 210,"vidro": 200,"tela": 400,"placa": 400,"faceid": 350,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1400,"max": 1800},{"label": "256 GB","min": 1550,"max": 2000},{"label": "512 GB","min": 1450,"max": 1900}]},{"name": "iPhone 14 Plus","battDisc": 180,"defects": {"tampa": 210,"vidro": 200,"tela": 420,"placa": 400,"faceid": 350,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1500,"max": 1900},{"label": "256 GB","min": 1400,"max": 1800}]},{"name": "iPhone 14 Pro","battDisc": 240,"defects": {"tampa": 260,"vidro": 250,"tela": 445,"placa": 450,"faceid": 400,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1900,"max": 2450},{"label": "256 GB","min": 1950,"max": 2500},{"label": "512 GB","min": 2350,"max": 3000}]},{"name": "iPhone 14 Pro Max","battDisc": 290,"defects": {"tampa": 260,"vidro": 250,"tela": 430,"placa": 450,"faceid": 400,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 2100,"max": 2700},{"label": "256 GB","min": 2200,"max": 2800},{"label": "512 GB","min": 2300,"max": 2950}]},{"name": "iPhone 15","battDisc": 220,"defects": {"tampa": 260,"vidro": 260,"tela": 460,"placa": 500,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1850,"max": 2350},{"label": "256 GB","min": 1950,"max": 2500}]},{"name": "iPhone 15 Plus","battDisc": 500,"defects": {"tampa": 230,"vidro": 260,"tela": 410,"placa": 500,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 1950,"max": 2500},{"label": "256 GB","min": 2000,"max": 2600}]},{"name": "iPhone 15 Pro","battDisc": 260,"defects": {"tampa": 280,"vidro": 280,"tela": 460,"placa": 550,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 2250,"max": 2900},{"label": "256 GB","min": 2350,"max": 3050},{"label": "512 GB","min": 2550,"max": 3300}]},{"name": "iPhone 15 Pro Max","battDisc": 280,"defects": {"tampa": 280,"vidro": 280,"tela": 570,"placa": 550,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 2750,"max": 3550},{"label": "512 GB","min": 2950,"max": 3750},{"label": "1 TB","min": 2050,"max": 2600}]},{"name": "iPhone 16e","battDisc": 500,"defects": {"tampa": 500,"vidro": 500,"tela": 500,"placa": 500,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 0,"max": 0},{"label": "256 GB","min": 0,"max": 0}]},{"name": "iPhone 16","battDisc": 500,"defects": {"tampa": 330,"vidro": 300,"tela": 520,"placa": 600,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 2250,"max": 2900},{"label": "256 GB","min": 2350,"max": 3050}]},{"name": "iPhone 16 Plus","battDisc": 500,"defects": {"tampa": 330,"vidro": 380,"tela": 545,"placa": 600,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 2500,"max": 3200},{"label": "256 GB","min": 2050,"max": 2600}]},{"name": "iPhone 16 Pro","battDisc": 500,"defects": {"tampa": 450,"vidro": 380,"tela": 540,"placa": null,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","min": 3050,"max": 3900},{"label": "256 GB","min": 3250,"max": 4150},{"label": "512 GB","min": 3450,"max": 4450}]},{"name": "iPhone 16 Pro Max","battDisc": 500,"defects": {"tampa": 500,"vidro": 380,"tela": 535,"placa": null,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 3600,"max": 4600},{"label": "512 GB","min": 3850,"max": 5000},{"label": "1 TB","min": 4100,"max": 5300}]},{"name": "iPhone 17e","battDisc": 500,"defects": {"tampa": 500,"vidro": 500,"tela": 500,"placa": 500,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 0,"max": 0}]},{"name": "iPhone 17","battDisc": 500,"defects": {"tampa": 550,"vidro": 500,"tela": 645,"placa": 800,"faceid": 600,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 2900,"max": 3700},{"label": "512 GB","min": 0,"max": 0}]},{"name": "iPhone Air","battDisc": 500,"defects": {"tampa": 650,"vidro": 600,"tela": null,"placa": 900,"faceid": 600,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 0,"max": 0},{"label": "512 GB","min": 0,"max": 0}]},{"name": "iPhone 17 Pro","battDisc": 500,"defects": {"tampa": 650,"vidro": 600,"tela": 675,"placa": 900,"faceid": 700,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 4450,"max": 5700},{"label": "512 GB","min": 0,"max": 0}]},{"name": "iPhone 17 Pro Max","battDisc": 500,"defects": {"tampa": 650,"vidro": 650,"tela": 730,"placa": 1000,"faceid": 700,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","min": 5150,"max": 6600},{"label": "512 GB","min": 5450,"max": 7000},{"label": "1 TB","min": 6650,"max": 8550}]}],"installRates": [5.89,7.49,8.29,8.89,9.49,10.19,10.79,11.49,12.29,12.79,13.59,14.6,16.49,16.89,17.29,17.49,17.69,17.99]};
-let cfg=JSON.parse(localStorage.getItem("ota_calc_v6")||"null")||JSON.parse(JSON.stringify(DEFAULT));
+const DEFAULT={"adminPin": "1234","defectCats": [{"key": "tampa","label": "Tampa traseira"},{"key": "vidro","label": "Vidro frontal"},{"key": "tela","label": "Troca de tela"},{"key": "placa","label": "Reparo de placa"},{"key": "faceid","label": "Face ID"},{"key": "d1785354205347","label": "Camera"},{"key": "d1785354231317","label": "Alto falante / Microfone"}],"modelLines": [{"name": "iPhone 11","battDisc": 170,"defects": {"tampa": 150,"vidro": 100,"tela": 210,"placa": 200,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","value": 700},{"label": "128 GB","value": 900},{"label": "256 GB","value": 850}]},{"name": "iPhone 11 Pro","battDisc": 200,"defects": {"tampa": 170,"vidro": 120,"tela": 300,"placa": 230,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","value": 900},{"label": "256 GB","value": 950}]},{"name": "iPhone 11 Pro Max","battDisc": 200,"defects": {"tampa": 180,"vidro": 130,"tela": 315,"placa": 230,"faceid": 150,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","value": 1000},{"label": "256 GB","value": 1050},{"label": "512 GB","value": 1000}]},{"name": "iPhone 12 mini","battDisc": 160,"defects": {"tampa": 170,"vidro": 120,"tela": null,"placa": 250,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","value": 600},{"label": "128 GB","value": 600}]},{"name": "iPhone 12","battDisc": 180,"defects": {"tampa": 170,"vidro": 120,"tela": 340,"placa": 250,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "64 GB","value": 950},{"label": "128 GB","value": 1250},{"label": "256 GB","value": 1250}]},{"name": "iPhone 12 Pro","battDisc": 180,"defects": {"tampa": 180,"vidro": 120,"tela": null,"placa": 300,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1350},{"label": "256 GB","value": 1550},{"label": "512 GB","value": 1750}]},{"name": "iPhone 12 Pro Max","battDisc": 210,"defects": {"tampa": 200,"vidro": 150,"tela": 375,"placa": 300,"faceid": 180,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1700},{"label": "256 GB","value": 2000},{"label": "512 GB","value": 2450}]},{"name": "iPhone 13 mini","battDisc": 500,"defects": {"tampa": 170,"vidro": 150,"tela": null,"placa": 300,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 900},{"label": "256 GB","value": 900}]},{"name": "iPhone 13","battDisc": 180,"defects": {"tampa": 180,"vidro": 160,"tela": 390,"placa": 300,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1550},{"label": "256 GB","value": 1700},{"label": "512 GB","value": 1800}]},{"name": "iPhone 13 Pro","battDisc": 210,"defects": {"tampa": 200,"vidro": 180,"tela": 420,"placa": 350,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1950},{"label": "256 GB","value": 2150},{"label": "512 GB","value": 2350}]},{"name": "iPhone 13 Pro Max","battDisc": 250,"defects": {"tampa": 210,"vidro": 180,"tela": 420,"placa": 350,"faceid": 300,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2300},{"label": "256 GB","value": 2400},{"label": "512 GB","value": 2500}]},{"name": "iPhone 14","battDisc": 200,"defects": {"tampa": 210,"vidro": 200,"tela": 400,"placa": 400,"faceid": 350,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1800},{"label": "256 GB","value": 2000},{"label": "512 GB","value": 1900}]},{"name": "iPhone 14 Plus","battDisc": 180,"defects": {"tampa": 210,"vidro": 200,"tela": 420,"placa": 400,"faceid": 350,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 1900},{"label": "256 GB","value": 1800}]},{"name": "iPhone 14 Pro","battDisc": 240,"defects": {"tampa": 260,"vidro": 250,"tela": 445,"placa": 450,"faceid": 400,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2450},{"label": "256 GB","value": 2500},{"label": "512 GB","value": 3000}]},{"name": "iPhone 14 Pro Max","battDisc": 290,"defects": {"tampa": 260,"vidro": 250,"tela": 430,"placa": 450,"faceid": 400,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2700},{"label": "256 GB","value": 2800},{"label": "512 GB","value": 2950}]},{"name": "iPhone 15","battDisc": 220,"defects": {"tampa": 260,"vidro": 260,"tela": 460,"placa": 500,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2350},{"label": "256 GB","value": 2500}]},{"name": "iPhone 15 Plus","battDisc": 500,"defects": {"tampa": 230,"vidro": 260,"tela": 410,"placa": 500,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2500},{"label": "256 GB","value": 2600}]},{"name": "iPhone 15 Pro","battDisc": 260,"defects": {"tampa": 280,"vidro": 280,"tela": 460,"placa": 550,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2900},{"label": "256 GB","value": 3050},{"label": "512 GB","value": 3300}]},{"name": "iPhone 15 Pro Max","battDisc": 280,"defects": {"tampa": 280,"vidro": 280,"tela": 570,"placa": 550,"faceid": 450,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 3550},{"label": "512 GB","value": 3750},{"label": "1 TB","value": 2600}]},{"name": "iPhone 16e","battDisc": 500,"defects": {"tampa": 500,"vidro": 500,"tela": 500,"placa": 500,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 0},{"label": "256 GB","value": 0}]},{"name": "iPhone 16","battDisc": 500,"defects": {"tampa": 330,"vidro": 300,"tela": 520,"placa": 600,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 2900},{"label": "256 GB","value": 3050}]},{"name": "iPhone 16 Plus","battDisc": 500,"defects": {"tampa": 330,"vidro": 380,"tela": 545,"placa": 600,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 3200},{"label": "256 GB","value": 2600}]},{"name": "iPhone 16 Pro","battDisc": 500,"defects": {"tampa": 450,"vidro": 380,"tela": 540,"placa": null,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "128 GB","value": 3900},{"label": "256 GB","value": 4150},{"label": "512 GB","value": 4450}]},{"name": "iPhone 16 Pro Max","battDisc": 500,"defects": {"tampa": 500,"vidro": 380,"tela": 535,"placa": null,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 4600},{"label": "512 GB","value": 5000},{"label": "1 TB","value": 5300}]},{"name": "iPhone 17e","battDisc": 500,"defects": {"tampa": 500,"vidro": 500,"tela": 500,"placa": 500,"faceid": 500,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 0}]},{"name": "iPhone 17","battDisc": 500,"defects": {"tampa": 550,"vidro": 500,"tela": 645,"placa": 800,"faceid": 600,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 3700},{"label": "512 GB","value": 0}]},{"name": "iPhone Air","battDisc": 500,"defects": {"tampa": 650,"vidro": 600,"tela": null,"placa": 900,"faceid": 600,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 0},{"label": "512 GB","value": 0}]},{"name": "iPhone 17 Pro","battDisc": 500,"defects": {"tampa": 650,"vidro": 600,"tela": 675,"placa": 900,"faceid": 700,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 5700},{"label": "512 GB","value": 0}]},{"name": "iPhone 17 Pro Max","battDisc": 500,"defects": {"tampa": 650,"vidro": 650,"tela": 730,"placa": 1000,"faceid": 700,"d1785354205347": null,"d1785354231317": null},"storages": [{"label": "256 GB","value": 6600},{"label": "512 GB","value": 7000},{"label": "1 TB","value": 8550}]}],"installRates": [5.89,7.49,8.29,8.89,9.49,10.19,10.79,11.49,12.29,12.79,13.59,14.6,16.49,16.89,17.29,17.49,17.69,17.99]};
+let cfg=JSON.parse(localStorage.getItem("ota_calc_v7")||"null")||JSON.parse(JSON.stringify(DEFAULT));
 if(!cfg.defectCats)cfg.defectCats=JSON.parse(JSON.stringify(DEFECT_CATS_DEFAULT));
 if(!cfg.adminPin)cfg.adminPin="1234";
 let selectedLine=-1,selectedStorage=-1,battery=-1,checkedDefects={},consultValues={};
@@ -150,7 +150,6 @@ let dropdownOpen=false,filteredList=[],hlIndex=-1;
 
 const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n||0);
 const $=id=>document.getElementById(id);
-const range=(a,b)=>a===b?money(a):money(a)+" – "+money(b);
 
 function showTab(t){
  $("tabCompra").classList.toggle("active",t==="compra");
@@ -205,7 +204,7 @@ function chooseStorage(j){
  renderStorageOptions();
  let s=cfg.modelLines[selectedLine].storages[j];
  $("badgeRow").classList.remove("hidden");
- $("badgeRange").textContent=range(s.min,s.max);
+ $("badgeRange").textContent=money(s.value);
  $("step2").classList.remove("hidden");
  $("step3").classList.add("hidden");
  $("upgradeCard").classList.add("hidden");
@@ -243,168 +242,4 @@ function renderDefects(){
   let isChecked=!!checkedDefects[cat.key];
   let box=`<label class="defect"><span>${cat.label}<small>${isConsult?'Consultar':'−'+money(val)}</small></span><input type="checkbox" ${isChecked?'checked':''} onchange="toggleDefect('${cat.key}',this.checked)"></label>`;
   if(isConsult&&isChecked){
-   box+=`<div class="field full"><label>Valor consultado — ${cat.label}</label><div class="money-input"><span class="prefix">R$</span><input type="text" inputmode="numeric" value="${consultValues[cat.key]?Number(consultValues[cat.key]).toLocaleString('pt-BR'):''}" oninput="setConsultValue('${cat.key}',this)"><span class="suffix">,00</span></div></div>`;
-  }
-  return box;
- }).join("");
-}
-function toggleDefect(key,val){
- checkedDefects[key]=val;
- if(!val)delete consultValues[key];
- renderDefects();
- calc();
-}
-function setConsultValue(key,el){
- let digits=el.value.replace(/\D/g,"");
- el.value=digits?Number(digits).toLocaleString("pt-BR"):"";
- consultValues[key]=+digits||0;
- calc();
-}
-function calc(){
- if(selectedLine<0||selectedStorage<0)return;
- let line=cfg.modelLines[selectedLine],s=line.storages[selectedStorage];
- let battDisc=battery===1?line.battDisc:0;
- let defectTotal=0;
- cfg.defectCats.forEach(cat=>{
-  if(!checkedDefects[cat.key])return;
-  let val=line.defects[cat.key];
-  defectTotal+=(val===null||val===undefined)?(consultValues[cat.key]||0):val;
- });
- let disc=battDisc+defectTotal;
- let rawMin=s.min-disc,rawMax=s.max-disc;
- let finalMin=Math.max(0,rawMin),finalMax=Math.max(0,rawMax);
- if(finalMin>finalMax)[finalMin,finalMax]=[finalMax,finalMin];
- $("baseRange").textContent=range(s.min,s.max);
- $("discRange").textContent=money(disc);
- $("finalRange").textContent=range(finalMin,finalMax);
- $("warnBox").classList.toggle("hidden",rawMax>=0);
- if(battery>=0){
-  $("upgradeCard").classList.remove("hidden");
-  $("tradeRef").textContent=range(finalMin,finalMax);
-  let quoted=moneyInputValue("quotedPrice");
-  $("quotedRef").textContent=money(quoted);
-  let diffMin=Math.max(0,quoted-finalMax),diffMax=Math.max(0,quoted-finalMin);
-  let creditMin=Math.max(0,finalMin-quoted),creditMax=Math.max(0,finalMax-quoted);
-  if(quoted>0&&finalMax>=quoted&&finalMin>=quoted){
-   $("diffRange").textContent="Crédito de "+range(creditMin,creditMax);
-  }else{
-   $("diffRange").textContent=range(diffMin,diffMax);
-  }
-  window._lastDiff={min:diffMin,max:diffMax};
- }
-}
-function resetAll(){
- selectedLine=-1;selectedStorage=-1;battery=-1;checkedDefects={};consultValues={};
- $("search").value="";
- $("quotedPrice").value="";
- $("modelBadgeRow").classList.add("hidden");
- $("stepStorage").classList.add("hidden");
- $("badgeRow").classList.add("hidden");
- $("step2").classList.add("hidden");
- $("step3").classList.add("hidden");
- $("upgradeCard").classList.add("hidden");
- window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function useCalculatedDiff(){
- if(!window._lastDiff){toast("Calcule um upgrade na aba Compra primeiro");return}
- let avg=(window._lastDiff.min+window._lastDiff.max)/2;
- $("parcelValue").value=Math.round(avg);
- renderParcel();
-}
-function renderParcel(){
- let v=+$("parcelValue").value||0;
- $("parcelRows").innerHTML=cfg.installRates.map((rate,idx)=>{
-  let n=idx+1;
-  let total=v/(1-rate/100);
-  total=Math.ceil(total*100)/100;
-  let per=Math.ceil((total/n)*100)/100;
-  let cls=n<=12?"row-link":"row-presencial";
-  return `<tr class="${cls}"><td>${n===1?'À vista':n+'x'}</td><td>${rate}%</td><td>${money(per)}</td><td>${money(total)}</td></tr>`;
- }).join("");
-}
-
-function formatMoneyInput(el){
- let digits=el.value.replace(/\D/g,"");
- el.value=digits?Number(digits).toLocaleString("pt-BR"):"";
-}
-function moneyInputValue(id){
- return +($(id).value.replace(/\D/g,""))||0;
-}
-function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",1800)}
-
-function openAdmin(){
- $("pinInput").value="";
- $("pinModal").classList.add("open");
- setTimeout(()=>$("pinInput").focus(),50);
-}
-function closePinModal(){$("pinModal").classList.remove("open")}
-function confirmPin(){
- if($("pinInput").value===cfg.adminPin){
-  closePinModal();
-  renderAdmin();
-  $("admin").classList.add("open");
- }else{
-  toast("PIN incorreto");
-  $("pinInput").value="";
-  $("pinInput").focus();
- }
-}
-function closeAdmin(){$("admin").classList.remove("open")}
-function renderAdmin(){
- $("adminPinInput").value=cfg.adminPin;
- $("adminDefectCats").innerHTML=cfg.defectCats.map((cat,i)=>`<div class="admin-row2"><input id="catLabel${i}" value="${cat.label}" placeholder="Nome do defeito"><span></span><button onclick="removeDefectCat(${i})">Excluir</button></div>`).join("");
- $("adminLines").innerHTML=cfg.modelLines.map((l,i)=>`
- <div class="line-block">
- <div class="admin-row2"><div class="labeled-field"><label>Modelo</label><input id="ln${i}" value="${l.name}"></div><div class="labeled-field"><label>Valor troca de bateria</label><input id="lb${i}" type="number" value="${l.battDisc}"></div><button onclick="removeLine(${i})">Excluir</button></div>
- <h5>Defeitos (R$, deixe em branco pra "Consultar")</h5>
- <div class="defect-admin-grid">${cfg.defectCats.map(cat=>`<div><label>${cat.label}</label><input id="ld${i}_${cat.key}" type="number" value="${l.defects[cat.key]===null||l.defects[cat.key]===undefined?'':l.defects[cat.key]}" placeholder="Consultar"></div>`).join("")}</div>
- <h5>Armazenamentos (mín / máx)</h5>
- <div id="storages${i}">${l.storages.map((s,j)=>`<div class="admin-row3"><input id="sl${i}_${j}" value="${s.label}" placeholder="Armazenamento"><input id="smin${i}_${j}" type="number" value="${s.min}" placeholder="mín"><input id="smax${i}_${j}" type="number" value="${s.max}" placeholder="máx"><button onclick="removeStorage(${i},${j})">Excluir</button></div>`).join("")}</div>
- </div>`).join("");
- $("rateGrid").innerHTML=cfg.installRates.map((r,i)=>`<div><label>${i+1}x</label><input id="rate${i}" type="number" step="0.1" value="${r}"></div>`).join("");
-}
-function addLine(){cfg.modelLines.push({name:"Novo modelo",battDisc:500,storages:[{label:"128 GB",min:0,max:0}],defects:{tampa:500,vidro:500,tela:500,placa:500,faceid:500}});renderAdmin()}
-function removeLine(i){cfg.modelLines.splice(i,1);renderAdmin()}
-function removeStorage(i,j){cfg.modelLines[i].storages.splice(j,1);renderAdmin()}
-function addDefectCat(){
- let key="d"+Date.now();
- cfg.defectCats.push({key,label:"Novo defeito"});
- cfg.modelLines.forEach(l=>{l.defects[key]=null});
- renderAdmin();
-}
-function removeDefectCat(i){
- let key=cfg.defectCats[i].key;
- cfg.defectCats.splice(i,1);
- cfg.modelLines.forEach(l=>{delete l.defects[key]});
- renderAdmin();
-}
-function saveSettings(){
- cfg.adminPin=($("adminPinInput").value.trim()||cfg.adminPin).slice(0,4);
- cfg.defectCats=cfg.defectCats.map((cat,i)=>({key:cat.key,label:$("catLabel"+i).value||cat.label}));
- cfg.modelLines=cfg.modelLines.map((l,i)=>{
-  let defects={};
-  cfg.defectCats.forEach(cat=>{
-   let raw=$("ld"+i+"_"+cat.key).value.trim();
-   defects[cat.key]=raw===""?null:(+raw||0);
-  });
-  return{
-   name:$("ln"+i).value||l.name,
-   battDisc:+$("lb"+i).value||0,
-   defects,
-   storages:l.storages.map((s,j)=>({label:$("sl"+i+"_"+j).value||s.label,min:+$("smin"+i+"_"+j).value||0,max:+$("smax"+i+"_"+j).value||0}))
-  };
- });
- cfg.installRates=cfg.installRates.map((r,i)=>+$("rate"+i).value||0);
- localStorage.setItem("ota_calc_v6",JSON.stringify(cfg));
- resetAll();
- renderParcel();
- closeAdmin();
- toast("Configurações salvas!");
-}
-function exportConfig(){navigator.clipboard.writeText(JSON.stringify(cfg,null,2));toast("Configuração copiada!")}
-
-renderParcel();
-</script>
-</body>
-</html>
+   box+=
