@@ -26,7 +26,13 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 .battery{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.battery button{border:1px solid var(--line);background:#fff;border-radius:15px;padding:13px 8px;cursor:pointer;text-align:left}.battery button.active{border:2px solid #111;padding:12px}.battery .icon{font-size:19px}.battery b{display:block;margin-top:4px}.battery small{display:block;color:#777;margin-top:3px}
 .defects{display:grid;grid-template-columns:1fr 1fr;gap:9px}.defect{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff;cursor:pointer}.defect span{font-weight:700}.defect small{color:#b22;display:block;margin-top:2px}.defect input{width:19px;height:19px;accent-color:#111}
 .full{grid-column:1/-1}
-.result{background:#16a34a;color:#fff;border-radius:20px;padding:20px;margin-top:15px;transition:background .2s}.result.danger{background:#dc2626}.result .muted{color:#e6f4ea;font-size:12px}.result.danger .muted{color:#fde2e2}.result .big{font-size:32px;font-weight:900;margin:3px 0 15px}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resbox{background:rgba(0,0,0,.18);border-radius:14px;padding:13px}.resbox b{font-size:16px}.resbox small{display:block;color:#e6f4ea}.result.danger .resbox small{color:#fde2e2}
+.result{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:20px;padding:20px;margin-top:15px}.result .muted{color:#888;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}.result .big{font-size:38px;font-weight:900;margin:4px 0 10px;color:#16a34a}.result.danger .big{color:#dc2626}
+.warn-pill{display:none;align-items:center;gap:6px;background:#fee2e2;color:#dc2626;font-weight:800;font-size:13px;padding:9px 14px;border-radius:999px;margin-bottom:10px;width:fit-content}.result.danger .warn-pill{display:flex}
+.deduct-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px;color:#555}
+.deduct-row.base{color:#111;font-weight:800;border-top:1px solid var(--line);margin-top:6px}.deduct-row.base .val{color:#111}
+.deduct-row .val{color:#dc2626;font-weight:700}
+.total-row{display:flex;justify-content:space-between;margin-top:4px;padding-top:12px;border-top:2px solid var(--line);font-weight:900;font-size:16px;color:#111}.total-row .val{color:#dc2626}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resbox{background:#1d1d1f;border-radius:14px;padding:13px}.resbox b{font-size:16px}.resbox small{display:block;color:#aaa}
 .reset{border:0;background:#eee;color:#111;width:100%;padding:14px;border-radius:13px;font-weight:900;cursor:pointer;margin-top:12px}
 .warn{background:#fee2e2;color:#b91c1c;font-weight:900;text-align:center;padding:14px;border-radius:14px;margin-top:12px;border:2px solid #f87171}
 .field{margin-top:12px}.field label{display:block;font-size:12px;color:#777;font-weight:800;margin:0 0 5px}
@@ -82,9 +88,14 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 <section class="card hidden" id="step3">
 <div class="step">Passo 3</div><div class="question">Defeitos presentes</div>
 <div id="defects" class="defects"></div>
-<div class="warn hidden" id="warnBox">⚠️ NÃO COMPRAR O APARELHO — os descontos ultrapassam o valor do aparelho</div>
-<div class="result" id="resultBox"><div class="muted">Valor de compra</div><div class="big" id="finalRange">R$ 0,00</div>
-<div class="result-grid"><div class="resbox"><small>Preço base</small><b id="baseRange">R$ 0,00</b></div><div class="resbox"><small>Total descontos</small><b id="discRange">R$ 0,00</b></div></div></div>
+<div class="result" id="resultBox">
+<div class="muted">Valor de compra</div>
+<div class="big" id="finalRange">R$ 0</div>
+<div class="warn-pill">⚠️ Valor negativo — recusar</div>
+<div class="deduct-row base"><span>Preço base</span><span class="val" id="baseRange">R$ 0</span></div>
+<div id="deductionList"></div>
+<div class="total-row"><span>Total descontos</span><span class="val" id="discRange">−R$ 0</span></div>
+</div>
 <button class="reset" onclick="resetAll()">↩ Nova avaliação</button>
 </section>
 
@@ -149,6 +160,7 @@ let selectedLine=-1,selectedStorage=-1,battery=-1,checkedDefects={},consultValue
 let dropdownOpen=false,filteredList=[],hlIndex=-1;
 
 const money=n=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(n||0);
+const moneyW=n=>"R$ "+Math.round(n||0).toLocaleString("pt-BR");
 const $=id=>document.getElementById(id);
 
 function showTab(t){
@@ -263,19 +275,23 @@ function calc(){
  if(selectedLine<0||selectedStorage<0)return;
  let line=cfg.modelLines[selectedLine],s=line.storages[selectedStorage];
  let battDisc=battery===1?line.battDisc:0;
+ let deductLines=[];
+ if(battery===1)deductLines.push({label:"🔴 Bateria abaixo de 84%",value:battDisc});
  let defectTotal=0;
  cfg.defectCats.forEach(cat=>{
   if(!checkedDefects[cat.key])return;
   let val=line.defects[cat.key];
-  defectTotal+=(val===null||val===undefined)?(consultValues[cat.key]||0):val;
+  let v=(val===null||val===undefined)?(consultValues[cat.key]||0):val;
+  defectTotal+=v;
+  deductLines.push({label:cat.label,value:v});
  });
  let disc=battDisc+defectTotal;
  let raw=s.value-disc;
  let final=Math.max(0,raw);
- $("baseRange").textContent=money(s.value);
- $("discRange").textContent=money(disc);
- $("finalRange").textContent=money(final);
- $("warnBox").classList.toggle("hidden",raw>=0);
+ $("baseRange").textContent=moneyW(s.value);
+ $("discRange").textContent="−"+moneyW(disc);
+ $("finalRange").textContent=moneyW(final);
+ $("deductionList").innerHTML=deductLines.map(d=>`<div class="deduct-row"><span>${d.label}</span><span class="val">−${moneyW(d.value)}</span></div>`).join("");
  $("resultBox").classList.toggle("danger",raw<0);
  if(battery>=0){
   $("upgradeCard").classList.remove("hidden");
