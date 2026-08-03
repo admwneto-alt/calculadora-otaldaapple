@@ -32,7 +32,10 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 .deduct-row.base{color:#111;font-weight:800;border-top:1px solid var(--line);margin-top:6px}.deduct-row.base .val{color:#111}
 .deduct-row .val{color:#dc2626;font-weight:700}
 .total-row{display:flex;justify-content:space-between;margin-top:4px;padding-top:12px;border-top:2px solid var(--line);font-weight:900;font-size:16px;color:#111}.total-row .val{color:#dc2626}
-.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resbox{background:#1d1d1f;border-radius:14px;padding:13px}.resbox b{font-size:16px}.resbox small{display:block;color:#aaa}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.resbox{background:#1d1d1f;border-radius:14px;padding:13px}.resbox b{font-size:16px;color:#fff}.resbox small{display:block;color:#bbb}
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.quick-box{border-radius:20px;padding:20px 14px;text-align:center;box-shadow:var(--shadow)}.quick-box small{font-weight:900;font-size:12px;letter-spacing:1px}.quick-box b{display:block;font-size:28px;font-weight:900;margin-top:6px}
+.quick-avista{background:#16a34a}.quick-avista small{color:#dcfce7}.quick-avista b{color:#fff}
+.quick-12x{background:#2563eb}.quick-12x small{color:#dbeafe}.quick-12x b{color:#fff}
 .reset{border:0;background:#eee;color:#111;width:100%;padding:14px;border-radius:13px;font-weight:900;cursor:pointer;margin-top:12px}
 .warn{background:#fee2e2;color:#b91c1c;font-weight:900;text-align:center;padding:14px;border-radius:14px;margin-top:12px;border:2px solid #f87171}
 .field{margin-top:12px}.field label{display:block;font-size:12px;color:#777;font-weight:800;margin:0 0 5px}
@@ -105,7 +108,17 @@ input,select{width:100%;border:1px solid #d8d8dc;background:#fff;border-radius:1
 <div class="money-input"><span class="prefix">R$</span><input id="quotedPrice" type="text" inputmode="numeric" placeholder="0" oninput="formatMoneyInput(this);calc()"><span class="suffix">,00</span></div>
 </div>
 <div class="result" style="margin-top:12px"><div class="muted">Diferença a pagar</div><div class="big" id="diffRange">R$ 0,00</div>
-<div class="result-grid"><div class="resbox"><small>Valor de compra (usado)</small><b id="tradeRef">R$ 0,00</b></div><div class="resbox"><small>Aparelho cotado</small><b id="quotedRef">R$ 0,00</b></div></div></div>
+<div class="result-grid"><div class="resbox"><small>Valor de compra (usado)</small><b id="tradeRef">R$ 0,00</b></div><div class="resbox"><small>Aparelho cotado</small><b id="quotedRef">R$ 0,00</b></div></div>
+</div>
+</section>
+
+<section class="card hidden" id="quickSummary">
+<div class="step">Pra fechar o orçamento</div>
+<div class="question">À vista ou em 12x</div>
+<div class="quick-grid">
+<div class="quick-box quick-avista"><small>À VISTA</small><b id="previewAvista">R$ 0</b></div>
+<div class="quick-box quick-12x"><small>12X</small><b id="previewParcel12">R$ 0</b></div>
+</div>
 </section>
 
 </div>
@@ -205,6 +218,7 @@ function chooseModel(i){
  $("step2").classList.add("hidden");
  $("step3").classList.add("hidden");
  $("upgradeCard").classList.add("hidden");
+ $("quickSummary").classList.add("hidden");
  renderStorageOptions();
 }
 function renderStorageOptions(){
@@ -220,6 +234,7 @@ function chooseStorage(j){
  $("step2").classList.remove("hidden");
  $("step3").classList.add("hidden");
  $("upgradeCard").classList.add("hidden");
+ $("quickSummary").classList.add("hidden");
  document.querySelectorAll("[data-bat]").forEach(x=>x.classList.remove("active"));
  renderBatteryLabel();
  calc();
@@ -233,6 +248,7 @@ function clearModel(){
  $("step2").classList.add("hidden");
  $("step3").classList.add("hidden");
  $("upgradeCard").classList.add("hidden");
+ $("quickSummary").classList.add("hidden");
 }
 function renderBatteryLabel(){
  if(selectedLine<0)return;
@@ -295,6 +311,7 @@ function calc(){
  $("resultBox").classList.toggle("danger",raw<0);
  if(battery>=0){
   $("upgradeCard").classList.remove("hidden");
+  $("quickSummary").classList.remove("hidden");
   $("tradeRef").textContent=money(final);
   let quoted=moneyInputValue("quotedPrice");
   $("quotedRef").textContent=money(quoted);
@@ -306,7 +323,15 @@ function calc(){
    $("diffRange").textContent=money(diff);
   }
   window._lastDiff=diff;
+  renderUpgradePreview(diff);
  }
+}
+function renderUpgradePreview(v){
+ let r12=cfg.installRates[11];
+ let t12=Math.ceil((v/(1-r12/100))*100)/100;
+ let p12=Math.ceil((t12/12)*100)/100;
+ $("previewAvista").textContent=money(v);
+ $("previewParcel12").textContent=money(p12);
 }
 function resetAll(){
  selectedLine=-1;selectedStorage=-1;battery=-1;checkedDefects={};consultValues={};
@@ -318,6 +343,7 @@ function resetAll(){
  $("step2").classList.add("hidden");
  $("step3").classList.add("hidden");
  $("upgradeCard").classList.add("hidden");
+ $("quickSummary").classList.add("hidden");
  window.scrollTo({top:0,behavior:"smooth"});
 }
 
